@@ -138,6 +138,10 @@ class WanDiffusionWrapper(torch.nn.Module):
         )
         self.scheduler.set_timesteps(1000, training=True)
 
+        # TODO: see if this seq_len could be changed!!! 
+        #   if we want to change num of total frames this has to be changed too!!!
+        #   but why are there only 21 frames here???
+
         self.seq_len = 32760  # [1, 21, 16, 60, 104]
         self.post_init()
 
@@ -235,9 +239,16 @@ class WanDiffusionWrapper(torch.nn.Module):
         else:
             input_timestep = timestep
 
+        # TODO: see if this piece of code is touched from demo.py
+        print("### wan_wrapper.py ###")
+        print("#### forward ####")
+        import time
+
         logits = None
         # X0 prediction
         if kv_cache is not None:
+            print("##### using kv cache #####")
+            model_start = time.time()
             flow_pred = self.model(
                 noisy_image_or_video.permute(0, 2, 1, 3, 4),
                 t=input_timestep, context=prompt_embeds,
@@ -247,6 +258,19 @@ class WanDiffusionWrapper(torch.nn.Module):
                 current_start=current_start,
                 cache_start=cache_start
             ).permute(0, 2, 1, 3, 4)
+            model_end = time.time()
+            print(f"##### model time: {model_end - model_start} #####")
+            print("========= shapes =========")
+            print(f"noisy_image_or_video: {noisy_image_or_video.shape}")
+            print(f"noisy_image_or_video permute: {noisy_image_or_video.permute(0, 2, 1, 3, 4).shape}")
+            print(f"t input_timestep: {input_timestep.shape}")
+            print(f"context prompt_embeds: {prompt_embeds.shape}")
+            print(f"seq_len: {self.seq_len}")
+            print(f"kv_cache: {len(kv_cache)}")
+            print("-------------------------")
+            print(f"flow_pred: {flow_pred.shape}")
+            print("=========================")
+
         else:
             if clean_x is not None:
                 # teacher forcing
@@ -277,11 +301,16 @@ class WanDiffusionWrapper(torch.nn.Module):
                         seq_len=self.seq_len
                     ).permute(0, 2, 1, 3, 4)
 
+        convert_start = time.time()
         pred_x0 = self._convert_flow_pred_to_x0(
             flow_pred=flow_pred.flatten(0, 1),
             xt=noisy_image_or_video.flatten(0, 1),
             timestep=timestep.flatten(0, 1)
         ).unflatten(0, flow_pred.shape[:2])
+        convert_end = time.time()
+        print(f"##### convert time: {convert_end - convert_start} #####")
+        print(f"pred_x0: {pred_x0.shape}")
+        print("#########################")
 
         if logits is not None:
             return flow_pred, pred_x0, logits

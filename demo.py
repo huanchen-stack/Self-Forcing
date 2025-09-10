@@ -285,8 +285,13 @@ def generate_video_stream(prompt, seed, enable_torch_compile=False, enable_fp8=F
         # Text encoding
         emit_progress('Encoding text prompt...', 8)
         conditional_dict = text_encoder(text_prompts=[prompt])
+        
+        print(f"Prompt: {prompt}")
+        print(f"Conditional dict keys: {list(conditional_dict.keys())}")
         for key, value in conditional_dict.items():
             conditional_dict[key] = value.to(dtype=torch.float16)
+            print(f"\t {key} shape: {value.shape}, dtype: {value.dtype}")
+
         if low_memory:
             gpu_memory_preservation = get_cuda_free_memory_gb(gpu) + 5
             move_model_to_device_with_memory_preservation(
@@ -303,19 +308,30 @@ def generate_video_stream(prompt, seed, enable_torch_compile=False, enable_fp8=F
         # Initialize generation
         emit_progress('Initializing generation...', 12)
 
+        print(f"Seed: {seed}")
         rnd = torch.Generator(gpu).manual_seed(seed)
+        print(f"rnd: {rnd} (based on gpu {gpu})")
         # all_latents = torch.zeros([1, 21, 16, 60, 104], device=gpu, dtype=torch.bfloat16)
 
         pipeline._initialize_kv_cache(batch_size=1, dtype=torch.float16, device=gpu)
         pipeline._initialize_crossattn_cache(batch_size=1, dtype=torch.float16, device=gpu)
 
+        # TODO: see if 21 = 3 * 7 (3 = pipeline.num_frame_per_block, 7 = num_blocks);
+        #   if so, if we were to change total number of blocks, we need to change noise shape too
+
         noise = torch.randn([1, 21, 16, 60, 104], device=gpu, dtype=torch.float16, generator=rnd)
 
         # Generation parameters
+        
+        # TODO: see if num_blocks and pipeline.num_frame_per_block can be adjusted for different lengths
+        
         num_blocks = 7
         current_start_frame = 0
         num_input_frames = 0
         all_num_frames = [pipeline.num_frame_per_block] * num_blocks
+        
+        print(f"Frames status: total {sum(all_num_frames)}, per block {all_num_frames}")
+        
         if current_use_taehv:
             vae_cache = None
         else:
@@ -329,6 +345,8 @@ def generate_video_stream(prompt, seed, enable_torch_compile=False, enable_fp8=F
         emit_progress('Generating frames... (frontend handles timing)', 15)
 
         for idx, current_num_frames in enumerate(all_num_frames):
+            
+            print(f"In loop: idx {idx}, current_num_frames {current_num_frames}, current_start_frame {current_start_frame}")
             if not generation_active or stop_event.is_set():
                 break
 
@@ -346,19 +364,25 @@ def generate_video_stream(prompt, seed, enable_torch_compile=False, enable_fp8=F
 
             block_start_time = time.time()
 
-            noisy_input = noise[:, current_start_frame -
-                                num_input_frames:current_start_frame + current_num_frames - num_input_frames]
+            noisy_input = noise[:, current_start_frame - num_input_frames : current_start_frame + current_num_frames - num_input_frames]
+            print(f"noisy_input shape: {noisy_input.shape}, sharding: {current_start_frame - num_input_frames} to {current_start_frame + current_num_frames - num_input_frames}")
+            print(f"\t current_start_frame: {current_start_frame}, num_input_frames: {num_input_frames}, current_num_frames: {current_num_frames}")
 
             # Denoising loop
             denoising_start = time.time()
+
+            print(f"pipeline denoising steps: {pipeline.denoising_step_list}")
+
             for index, current_timestep in enumerate(pipeline.denoising_step_list):
                 if not generation_active or stop_event.is_set():
                     break
 
                 timestep = torch.ones([1, current_num_frames], device=noise.device,
                                       dtype=torch.int64) * current_timestep
+                print(f"\t timestep shape: {timestep.shape}, value: {timestep}")
 
                 if index < len(pipeline.denoising_step_list) - 1:
+                    transformer_start = time.time()
                     _, denoised_pred = transformer(
                         noisy_image_or_video=noisy_input,
                         conditional_dict=conditional_dict,
@@ -367,13 +391,21 @@ def generate_video_stream(prompt, seed, enable_torch_compile=False, enable_fp8=F
                         crossattn_cache=pipeline.crossattn_cache,
                         current_start=current_start_frame * pipeline.frame_seq_length
                     )
+                    transformer_time = time.time() - transformer_start
+                    print(f"\t Transformer denoising step {index+1}/{len(pipeline.denoising_step_list)} completed in {transformer_time:.2f}s")
+                    
                     next_timestep = pipeline.denoising_step_list[index + 1]
+                    
+                    add_noise_start = time.time()
                     noisy_input = pipeline.scheduler.add_noise(
                         denoised_pred.flatten(0, 1),
                         torch.randn_like(denoised_pred.flatten(0, 1)),
                         next_timestep * torch.ones([1 * current_num_frames], device=noise.device, dtype=torch.long)
                     ).unflatten(0, denoised_pred.shape[:2])
+                    add_noise_time = time.time() - add_noise_start
+                    print(f"\t   ➕ Add noise for next step completed in {add_noise_time:.2f}s")
                 else:
+                    transformer_start = time.time()
                     _, denoised_pred = transformer(
                         noisy_image_or_video=noisy_input,
                         conditional_dict=conditional_dict,
@@ -382,6 +414,8 @@ def generate_video_stream(prompt, seed, enable_torch_compile=False, enable_fp8=F
                         crossattn_cache=pipeline.crossattn_cache,
                         current_start=current_start_frame * pipeline.frame_seq_length
                     )
+                    transformer_time = time.time() - transformer_start
+                    print(f"\t Transformer final denoising step {index+1}/{len(pipeline.denoising_step_list)} completed in {transformer_time:.2f}s")
 
             if not generation_active or stop_event.is_set():
                 break
@@ -392,6 +426,7 @@ def generate_video_stream(prompt, seed, enable_torch_compile=False, enable_fp8=F
             # Record output
             # all_latents[:, current_start_frame:current_start_frame + current_num_frames] = denoised_pred
 
+            kv_update_start = time.time()
             # Update KV cache for next block
             if idx != len(all_num_frames) - 1:
                 transformer(
@@ -402,6 +437,11 @@ def generate_video_stream(prompt, seed, enable_torch_compile=False, enable_fp8=F
                     crossattn_cache=pipeline.crossattn_cache,
                     current_start=current_start_frame * pipeline.frame_seq_length,
                 )
+            kv_update_time = time.time() - kv_update_start
+            print(f"KV cache update for next block completed in {kv_update_time:.2f}s")
+            print(f"denoised_pred shape: {denoised_pred.shape}, dtype: {denoised_pred.dtype}")
+
+            print(f"decoding args: args.trt {args.trt}, current_use_taehv {current_use_taehv}, vae_cache is None {vae_cache is None if not args.trt else 'N/A'}")
 
             # Decode to pixels and send frames immediately
             print(f"🎨 Decoding block {idx+1} to pixels...")
@@ -444,6 +484,8 @@ def generate_video_stream(prompt, seed, enable_torch_compile=False, enable_fp8=F
 
             # Queue frames for non-blocking sending
             block_frames = pixels.shape[1]
+            print(f"pixels shape after possible cropping: {pixels.shape}, block_frames: {block_frames}")
+
             print(f"📡 Queueing {block_frames} frames from block {idx+1} for sending...")
             queue_start = time.time()
 
@@ -452,6 +494,7 @@ def generate_video_stream(prompt, seed, enable_torch_compile=False, enable_fp8=F
                     break
 
                 frame_tensor = pixels[0, frame_idx].cpu()
+                print(f"\t Queueing frame {frame_idx+1}/{block_frames} of block {idx+1}, shape: {frame_tensor.shape}, dtype: {frame_tensor.dtype}")
 
                 # Queue frame data in non-blocking way
                 frame_send_queue.put((frame_tensor, total_frames_sent, idx, job_id))
