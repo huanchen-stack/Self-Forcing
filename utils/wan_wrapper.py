@@ -268,13 +268,15 @@ class WanDiffusionWrapper(torch.nn.Module):
             print(f"seq_len: {self.seq_len}")
             print(f"kv_cache: {len(kv_cache)}")
             print(f"kv_cache_dtype: {type(kv_cache[0])}")
+            print(f"cache_start: {cache_start}")
+            print(f"current_start: {current_start}")
             for kv in kv_cache[:1]:
                 for k, v in kv.items():
                     print(f"@@@ {k} @@@")
                     try:
                         print(f"@@@@ {v.shape} {v.mean()} {v.median()} {(v == 0).sum()} {(v != 0).sum()} @@@@")
                     except Exception as e:
-                        print(f"@@@@ {v.shape} @@@@")
+                        print(f"@@@@ {v.shape} {v.item()} @@@@")
             print(type(crossattn_cache))
             print(len(crossattn_cache))
             print(type(crossattn_cache[0]))
