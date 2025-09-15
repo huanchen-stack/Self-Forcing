@@ -1,0 +1,1475 @@
+Free VRAM 39.08099365234375 GB
+✅ VAE decoder initialized with default VAE
+KV inference with 3 frames per block
+🚀 Starting demo on http://0.0.0.0:5001
+ * Serving Flask app 'demo'
+ * Debug mode: off
+Client connected
+Client disconnected
+Client connected
+📡 Frame sender thread started
+Prompt: A stylish woman walks down a Tokyo street filled with warm glowing neon and animated city signage. She wears a black leather jacket, a long red dress, and black boots, and carries a black purse. She wears sunglasses and red lipstick. She walks confidently and casually. The street is damp and reflective, creating a mirror effect of the colorful lights. Many pedestrians walk about.
+Conditional dict keys: ['prompt_embeds']
+	 prompt_embeds shape: torch.Size([1, 512, 4096]), dtype: torch.bfloat16
+Moving DynamicSwap_WanTextEncoder to cuda:0 with preserved memory: 41.193517208099365 GB
+Seed: 1922138947
+rnd: <torch._C.Generator object at 0x78fedc5a8a90> (based on gpu cuda:0)
+Frames status: total 21, per block [3, 3, 3, 3, 3, 3, 3]
+In loop: idx 0, current_num_frames 3, current_start_frame 0
+🔄 Processing block 1/7
+noisy_input shape: torch.Size([1, 3, 16, 60, 104]), sharding: 0 to 3
+	 current_start_frame: 0, num_input_frames: 0, current_num_frames: 3
+pipeline denoising steps: tensor([1000.0000,  960.0000,  888.8889,  727.2728])
+	 timestep shape: torch.Size([1, 3]), value: tensor([[1000., 1000., 1000.]], device='cuda:0')
+### wan_wrapper.py ###
+#### forward ####
+##### using kv cache #####
+##### model time: 0.499082088470459 #####
+========= shapes =========
+noisy_image_or_video: torch.Size([1, 3, 16, 60, 104])
+noisy_image_or_video permute: torch.Size([1, 16, 3, 60, 104])
+t input_timestep: torch.Size([1, 3])
+context prompt_embeds: torch.Size([1, 512, 4096])
+seq_len: 32760
+kv_cache: 30
+kv_cache_dtype: <class 'dict'>
+@@@ k @@@
+@@@@ torch.Size([1, 32760, 12, 128]) -0.0010175704956054688 0.0 43130883 7188477 @@@@
+@@@ v @@@
+@@@@ torch.Size([1, 32760, 12, 128]) 0.0028133392333984375 0.0 43130880 7188480 @@@@
+@@@ global_end_index @@@
+@@@@ torch.Size([1]) @@@@
+@@@ local_end_index @@@
+@@@@ torch.Size([1]) @@@@
+<class 'list'>
+30
+<class 'dict'>
+$$$ k $$$
+$$$$ torch.Size([1, 512, 12, 128]) 0.0302276611328125 0.05511474609375 0 786432 $$$$
+$$$ v $$$
+$$$$ torch.Size([1, 512, 12, 128]) 0.00014972686767578125 -4.762411117553711e-05 422 786010 $$$$
+$$$ is_init $$$
+$$$$ <class 'bool'> $$$$
+-------------------------
+flow_pred: torch.Size([1, 3, 16, 60, 104])
+=========================
+##### convert time: 0.006503582000732422 #####
+pred_x0: torch.Size([1, 3, 16, 60, 104])
+#########################
+	 Transformer denoising step 1/4 completed in 0.54s
+	   ➕ Add noise for next step completed in 0.00s
+	 timestep shape: torch.Size([1, 3]), value: tensor([[960., 960., 960.]], device='cuda:0')
+### wan_wrapper.py ###
+#### forward ####
+##### using kv cache #####
+##### model time: 0.1498875617980957 #####
+========= shapes =========
+noisy_image_or_video: torch.Size([1, 3, 16, 60, 104])
+noisy_image_or_video permute: torch.Size([1, 16, 3, 60, 104])
+t input_timestep: torch.Size([1, 3])
+context prompt_embeds: torch.Size([1, 512, 4096])
+seq_len: 32760
+kv_cache: 30
+kv_cache_dtype: <class 'dict'>
+@@@ k @@@
+@@@@ torch.Size([1, 32760, 12, 128]) -0.0011491775512695312 0.0 43130881 7188479 @@@@
+@@@ v @@@
+@@@@ torch.Size([1, 32760, 12, 128]) 0.0030231475830078125 0.0 43130880 7188480 @@@@
+@@@ global_end_index @@@
+@@@@ torch.Size([1]) @@@@
+@@@ local_end_index @@@
+@@@@ torch.Size([1]) @@@@
+<class 'list'>
+30
+<class 'dict'>
+$$$ k $$$
+$$$$ torch.Size([1, 512, 12, 128]) 0.0302276611328125 0.05511474609375 0 786432 $$$$
+$$$ v $$$
+$$$$ torch.Size([1, 512, 12, 128]) 0.00014972686767578125 -4.762411117553711e-05 422 786010 $$$$
+$$$ is_init $$$
+$$$$ <class 'bool'> $$$$
+-------------------------
+flow_pred: torch.Size([1, 3, 16, 60, 104])
+=========================
+##### convert time: 0.0002346038818359375 #####
+pred_x0: torch.Size([1, 3, 16, 60, 104])
+#########################
+	 Transformer denoising step 2/4 completed in 0.16s
+	   ➕ Add noise for next step completed in 0.00s
+	 timestep shape: torch.Size([1, 3]), value: tensor([[888.8889, 888.8889, 888.8889]], device='cuda:0')
+### wan_wrapper.py ###
+#### forward ####
+##### using kv cache #####
+##### model time: 0.1518402099609375 #####
+========= shapes =========
+noisy_image_or_video: torch.Size([1, 3, 16, 60, 104])
+noisy_image_or_video permute: torch.Size([1, 16, 3, 60, 104])
+t input_timestep: torch.Size([1, 3])
+context prompt_embeds: torch.Size([1, 512, 4096])
+seq_len: 32760
+kv_cache: 30
+kv_cache_dtype: <class 'dict'>
+@@@ k @@@
+@@@@ torch.Size([1, 32760, 12, 128]) -0.0013103485107421875 0.0 43130880 7188480 @@@@
+@@@ v @@@
+@@@@ torch.Size([1, 32760, 12, 128]) 0.002979278564453125 0.0 43130880 7188480 @@@@
+@@@ global_end_index @@@
+@@@@ torch.Size([1]) @@@@
+@@@ local_end_index @@@
+@@@@ torch.Size([1]) @@@@
+<class 'list'>
+30
+<class 'dict'>
+$$$ k $$$
+$$$$ torch.Size([1, 512, 12, 128]) 0.0302276611328125 0.05511474609375 0 786432 $$$$
+$$$ v $$$
+$$$$ torch.Size([1, 512, 12, 128]) 0.00014972686767578125 -4.762411117553711e-05 422 786010 $$$$
+$$$ is_init $$$
+$$$$ <class 'bool'> $$$$
+-------------------------
+flow_pred: torch.Size([1, 3, 16, 60, 104])
+=========================
+##### convert time: 0.0002765655517578125 #####
+pred_x0: torch.Size([1, 3, 16, 60, 104])
+#########################
+	 Transformer denoising step 3/4 completed in 0.17s
+	   ➕ Add noise for next step completed in 0.00s
+	 timestep shape: torch.Size([1, 3]), value: tensor([[727.2728, 727.2728, 727.2728]], device='cuda:0')
+### wan_wrapper.py ###
+#### forward ####
+##### using kv cache #####
+##### model time: 0.14823365211486816 #####
+========= shapes =========
+noisy_image_or_video: torch.Size([1, 3, 16, 60, 104])
+noisy_image_or_video permute: torch.Size([1, 16, 3, 60, 104])
+t input_timestep: torch.Size([1, 3])
+context prompt_embeds: torch.Size([1, 512, 4096])
+seq_len: 32760
+kv_cache: 30
+kv_cache_dtype: <class 'dict'>
+@@@ k @@@
+@@@@ torch.Size([1, 32760, 12, 128]) -0.0015201568603515625 0.0 43130881 7188479 @@@@
+@@@ v @@@
+@@@@ torch.Size([1, 32760, 12, 128]) 0.00319671630859375 0.0 43130880 7188480 @@@@
+@@@ global_end_index @@@
+@@@@ torch.Size([1]) @@@@
+@@@ local_end_index @@@
+@@@@ torch.Size([1]) @@@@
+<class 'list'>
+30
+<class 'dict'>
+$$$ k $$$
+$$$$ torch.Size([1, 512, 12, 128]) 0.0302276611328125 0.05511474609375 0 786432 $$$$
+$$$ v $$$
+$$$$ torch.Size([1, 512, 12, 128]) 0.00014972686767578125 -4.762411117553711e-05 422 786010 $$$$
+$$$ is_init $$$
+$$$$ <class 'bool'> $$$$
+-------------------------
+flow_pred: torch.Size([1, 3, 16, 60, 104])
+=========================
+##### convert time: 0.00023365020751953125 #####
+pred_x0: torch.Size([1, 3, 16, 60, 104])
+#########################
+	 Transformer final denoising step 4/4 completed in 0.17s
+⚡ Block 1 denoising completed in 1.11s
+### wan_wrapper.py ###
+#### forward ####
+##### using kv cache #####
+##### model time: 0.1483902931213379 #####
+========= shapes =========
+noisy_image_or_video: torch.Size([1, 3, 16, 60, 104])
+noisy_image_or_video permute: torch.Size([1, 16, 3, 60, 104])
+t input_timestep: torch.Size([1, 3])
+context prompt_embeds: torch.Size([1, 512, 4096])
+seq_len: 32760
+kv_cache: 30
+kv_cache_dtype: <class 'dict'>
+@@@ k @@@
+@@@@ torch.Size([1, 32760, 12, 128]) -0.0020694732666015625 0.0 43130881 7188479 @@@@
+@@@ v @@@
+@@@@ torch.Size([1, 32760, 12, 128]) 0.0001615285873413086 0.0 43130880 7188480 @@@@
+@@@ global_end_index @@@
+@@@@ torch.Size([1]) @@@@
+@@@ local_end_index @@@
+@@@@ torch.Size([1]) @@@@
+<class 'list'>
+30
+<class 'dict'>
+$$$ k $$$
+$$$$ torch.Size([1, 512, 12, 128]) 0.0302276611328125 0.05511474609375 0 786432 $$$$
+$$$ v $$$
+$$$$ torch.Size([1, 512, 12, 128]) 0.00014972686767578125 -4.762411117553711e-05 422 786010 $$$$
+$$$ is_init $$$
+$$$$ <class 'bool'> $$$$
+-------------------------
+flow_pred: torch.Size([1, 3, 16, 60, 104])
+=========================
+##### convert time: 0.0002665519714355469 #####
+pred_x0: torch.Size([1, 3, 16, 60, 104])
+#########################
+KV cache update for next block completed in 0.16s
+denoised_pred shape: torch.Size([1, 3, 16, 60, 104]), dtype: torch.float16
+decoding args: args.trt False, current_use_taehv False, vae_cache is None False
+🎨 Decoding block 1 to pixels...
+Length of feat_cache:  32
+🎨 Block 1 VAE decoding completed in 0.26s
+pixels shape after possible cropping: torch.Size([1, 9, 3, 480, 832]), block_frames: 9
+📡 Queueing 9 frames from block 1 for sending...
+	 Queueing frame 1/9 of block 1, shape: torch.Size([3, 480, 832]), dtype: torch.float32
+	 Queueing frame 2/9 of block 1, shape: torch.Size([3, 480, 832]), dtype: torch.float32
+	 Queueing frame 3/9 of block 1, shape: torch.Size([3, 480, 832]), dtype: torch.float32
+	 Queueing frame 4/9 of block 1, shape: torch.Size([3, 480, 832]), dtype: torch.float32
+	 Queueing frame 5/9 of block 1, shape: torch.Size([3, 480, 832]), dtype: torch.float32
+	 Queueing frame 6/9 of block 1, shape: torch.Size([3, 480, 832]), dtype: torch.float32
+	 Queueing frame 7/9 of block 1, shape: torch.Size([3, 480, 832]), dtype: torch.float32
+	 Queueing frame 8/9 of block 1, shape: torch.Size([3, 480, 832]), dtype: torch.float32
+	 Queueing frame 9/9 of block 1, shape: torch.Size([3, 480, 832]), dtype: torch.float32
+✅ Block 1 completed in 1.92s (9 frames queued in 0.381s)
+In loop: idx 1, current_num_frames 3, current_start_frame 3
+🔄 Processing block 2/7
+noisy_input shape: torch.Size([1, 3, 16, 60, 104]), sharding: 3 to 6
+	 current_start_frame: 3, num_input_frames: 0, current_num_frames: 3
+pipeline denoising steps: tensor([1000.0000,  960.0000,  888.8889,  727.2728])
+	 timestep shape: torch.Size([1, 3]), value: tensor([[1000., 1000., 1000.]], device='cuda:0')
+### wan_wrapper.py ###
+#### forward ####
+##### using kv cache #####
+##### model time: 0.23760008811950684 #####
+========= shapes =========
+noisy_image_or_video: torch.Size([1, 3, 16, 60, 104])
+noisy_image_or_video permute: torch.Size([1, 16, 3, 60, 104])
+t input_timestep: torch.Size([1, 3])
+context prompt_embeds: torch.Size([1, 512, 4096])
+seq_len: 32760
+kv_cache: 30
+kv_cache_dtype: <class 'dict'>
+@@@ k @@@
+@@@@ torch.Size([1, 32760, 12, 128]) -0.00281524658203125 0.0 35942403 14376957 @@@@
+@@@ v @@@
+@@@@ torch.Size([1, 32760, 12, 128]) 0.0030975341796875 0.0 35942400 14376960 @@@@
+@@@ global_end_index @@@
+@@@@ torch.Size([1]) @@@@
+@@@ local_end_index @@@
+@@@@ torch.Size([1]) @@@@
+<class 'list'>
+30
+<class 'dict'>
+$$$ k $$$
+$$$$ torch.Size([1, 512, 12, 128]) 0.0302276611328125 0.05511474609375 0 786432 $$$$
+$$$ v $$$
+$$$$ torch.Size([1, 512, 12, 128]) 0.00014972686767578125 -4.762411117553711e-05 422 786010 $$$$
+$$$ is_init $$$
+$$$$ <class 'bool'> $$$$
+-------------------------
+flow_pred: torch.Size([1, 3, 16, 60, 104])
+=========================
+##### convert time: 0.0002608299255371094 #####
+pred_x0: torch.Size([1, 3, 16, 60, 104])
+#########################
+	 Transformer denoising step 1/4 completed in 0.25s
+	   ➕ Add noise for next step completed in 0.00s
+	 timestep shape: torch.Size([1, 3]), value: tensor([[960., 960., 960.]], device='cuda:0')
+### wan_wrapper.py ###
+#### forward ####
+##### using kv cache #####
+##### model time: 0.17087507247924805 #####
+========= shapes =========
+noisy_image_or_video: torch.Size([1, 3, 16, 60, 104])
+noisy_image_or_video permute: torch.Size([1, 16, 3, 60, 104])
+t input_timestep: torch.Size([1, 3])
+context prompt_embeds: torch.Size([1, 512, 4096])
+seq_len: 32760
+kv_cache: 30
+kv_cache_dtype: <class 'dict'>
+@@@ k @@@
+@@@@ torch.Size([1, 32760, 12, 128]) -0.0030059814453125 0.0 35942404 14376956 @@@@
+@@@ v @@@
+@@@@ torch.Size([1, 32760, 12, 128]) 0.0032291412353515625 0.0 35942401 14376959 @@@@
+@@@ global_end_index @@@
+@@@@ torch.Size([1]) @@@@
+@@@ local_end_index @@@
+@@@@ torch.Size([1]) @@@@
+<class 'list'>
+30
+<class 'dict'>
+$$$ k $$$
+$$$$ torch.Size([1, 512, 12, 128]) 0.0302276611328125 0.05511474609375 0 786432 $$$$
+$$$ v $$$
+$$$$ torch.Size([1, 512, 12, 128]) 0.00014972686767578125 -4.762411117553711e-05 422 786010 $$$$
+$$$ is_init $$$
+$$$$ <class 'bool'> $$$$
+-------------------------
+flow_pred: torch.Size([1, 3, 16, 60, 104])
+=========================
+##### convert time: 0.000225067138671875 #####
+pred_x0: torch.Size([1, 3, 16, 60, 104])
+#########################
+	 Transformer denoising step 2/4 completed in 0.19s
+	   ➕ Add noise for next step completed in 0.00s
+	 timestep shape: torch.Size([1, 3]), value: tensor([[888.8889, 888.8889, 888.8889]], device='cuda:0')
+### wan_wrapper.py ###
+#### forward ####
+##### using kv cache #####
+##### model time: 0.17114996910095215 #####
+========= shapes =========
+noisy_image_or_video: torch.Size([1, 3, 16, 60, 104])
+noisy_image_or_video permute: torch.Size([1, 16, 3, 60, 104])
+t input_timestep: torch.Size([1, 3])
+context prompt_embeds: torch.Size([1, 512, 4096])
+seq_len: 32760
+kv_cache: 30
+kv_cache_dtype: <class 'dict'>
+@@@ k @@@
+@@@@ torch.Size([1, 32760, 12, 128]) -0.0032482147216796875 0.0 35942403 14376957 @@@@
+@@@ v @@@
+@@@@ torch.Size([1, 32760, 12, 128]) 0.00318145751953125 0.0 35942400 14376960 @@@@
+@@@ global_end_index @@@
+@@@@ torch.Size([1]) @@@@
+@@@ local_end_index @@@
+@@@@ torch.Size([1]) @@@@
+<class 'list'>
+30
+<class 'dict'>
+$$$ k $$$
+$$$$ torch.Size([1, 512, 12, 128]) 0.0302276611328125 0.05511474609375 0 786432 $$$$
+$$$ v $$$
+$$$$ torch.Size([1, 512, 12, 128]) 0.00014972686767578125 -4.762411117553711e-05 422 786010 $$$$
+$$$ is_init $$$
+$$$$ <class 'bool'> $$$$
+-------------------------
+flow_pred: torch.Size([1, 3, 16, 60, 104])
+=========================
+##### convert time: 0.00021147727966308594 #####
+pred_x0: torch.Size([1, 3, 16, 60, 104])
+#########################
+	 Transformer denoising step 3/4 completed in 0.19s
+	   ➕ Add noise for next step completed in 0.00s
+	 timestep shape: torch.Size([1, 3]), value: tensor([[727.2728, 727.2728, 727.2728]], device='cuda:0')
+### wan_wrapper.py ###
+#### forward ####
+##### using kv cache #####
+##### model time: 0.17072820663452148 #####
+========= shapes =========
+noisy_image_or_video: torch.Size([1, 3, 16, 60, 104])
+noisy_image_or_video permute: torch.Size([1, 16, 3, 60, 104])
+t input_timestep: torch.Size([1, 3])
+context prompt_embeds: torch.Size([1, 512, 4096])
+seq_len: 32760
+kv_cache: 30
+kv_cache_dtype: <class 'dict'>
+@@@ k @@@
+@@@@ torch.Size([1, 32760, 12, 128]) -0.0035552978515625 0.0 35942405 14376955 @@@@
+@@@ v @@@
+@@@@ torch.Size([1, 32760, 12, 128]) 0.003582000732421875 0.0 35942400 14376960 @@@@
+@@@ global_end_index @@@
+@@@@ torch.Size([1]) @@@@
+@@@ local_end_index @@@
+@@@@ torch.Size([1]) @@@@
+<class 'list'>
+30
+<class 'dict'>
+$$$ k $$$
+$$$$ torch.Size([1, 512, 12, 128]) 0.0302276611328125 0.05511474609375 0 786432 $$$$
+$$$ v $$$
+$$$$ torch.Size([1, 512, 12, 128]) 0.00014972686767578125 -4.762411117553711e-05 422 786010 $$$$
+$$$ is_init $$$
+$$$$ <class 'bool'> $$$$
+-------------------------
+flow_pred: torch.Size([1, 3, 16, 60, 104])
+=========================
+##### convert time: 0.00022530555725097656 #####
+pred_x0: torch.Size([1, 3, 16, 60, 104])
+#########################
+	 Transformer final denoising step 4/4 completed in 0.19s
+⚡ Block 2 denoising completed in 0.82s
+### wan_wrapper.py ###
+#### forward ####
+##### using kv cache #####
+##### model time: 0.1771094799041748 #####
+========= shapes =========
+noisy_image_or_video: torch.Size([1, 3, 16, 60, 104])
+noisy_image_or_video permute: torch.Size([1, 16, 3, 60, 104])
+t input_timestep: torch.Size([1, 3])
+context prompt_embeds: torch.Size([1, 512, 4096])
+seq_len: 32760
+kv_cache: 30
+kv_cache_dtype: <class 'dict'>
+@@@ k @@@
+@@@@ torch.Size([1, 32760, 12, 128]) -0.00440216064453125 0.0 35942402 14376958 @@@@
+@@@ v @@@
+@@@@ torch.Size([1, 32760, 12, 128]) 0.0016298294067382812 0.0 35942400 14376960 @@@@
+@@@ global_end_index @@@
+@@@@ torch.Size([1]) @@@@
+@@@ local_end_index @@@
+@@@@ torch.Size([1]) @@@@
+<class 'list'>
+30
+<class 'dict'>
+$$$ k $$$
+$$$$ torch.Size([1, 512, 12, 128]) 0.0302276611328125 0.05511474609375 0 786432 $$$$
+$$$ v $$$
+$$$$ torch.Size([1, 512, 12, 128]) 0.00014972686767578125 -4.762411117553711e-05 422 786010 $$$$
+$$$ is_init $$$
+$$$$ <class 'bool'> $$$$
+-------------------------
+flow_pred: torch.Size([1, 3, 16, 60, 104])
+=========================
+##### convert time: 0.00021505355834960938 #####
+pred_x0: torch.Size([1, 3, 16, 60, 104])
+#########################
+KV cache update for next block completed in 0.19s
+denoised_pred shape: torch.Size([1, 3, 16, 60, 104]), dtype: torch.float16
+decoding args: args.trt False, current_use_taehv False, vae_cache is None False
+🎨 Decoding block 2 to pixels...
+Length of feat_cache:  32
+🎨 Block 2 VAE decoding completed in 0.19s
+pixels shape after possible cropping: torch.Size([1, 12, 3, 480, 832]), block_frames: 12
+📡 Queueing 12 frames from block 2 for sending...
+	 Queueing frame 1/12 of block 2, shape: torch.Size([3, 480, 832]), dtype: torch.float32
+	 Queueing frame 2/12 of block 2, shape: torch.Size([3, 480, 832]), dtype: torch.float32
+	 Queueing frame 3/12 of block 2, shape: torch.Size([3, 480, 832]), dtype: torch.float32
+	 Queueing frame 4/12 of block 2, shape: torch.Size([3, 480, 832]), dtype: torch.float32
+	 Queueing frame 5/12 of block 2, shape: torch.Size([3, 480, 832]), dtype: torch.float32
+	 Queueing frame 6/12 of block 2, shape: torch.Size([3, 480, 832]), dtype: torch.float32
+	 Queueing frame 7/12 of block 2, shape: torch.Size([3, 480, 832]), dtype: torch.float32
+	 Queueing frame 8/12 of block 2, shape: torch.Size([3, 480, 832]), dtype: torch.float32
+	 Queueing frame 9/12 of block 2, shape: torch.Size([3, 480, 832]), dtype: torch.float32
+	 Queueing frame 10/12 of block 2, shape: torch.Size([3, 480, 832]), dtype: torch.float32
+	 Queueing frame 11/12 of block 2, shape: torch.Size([3, 480, 832]), dtype: torch.float32
+	 Queueing frame 12/12 of block 2, shape: torch.Size([3, 480, 832]), dtype: torch.float32
+✅ Block 2 completed in 1.58s (12 frames queued in 0.384s)
+In loop: idx 2, current_num_frames 3, current_start_frame 6
+🔄 Processing block 3/7
+noisy_input shape: torch.Size([1, 3, 16, 60, 104]), sharding: 6 to 9
+	 current_start_frame: 6, num_input_frames: 0, current_num_frames: 3
+pipeline denoising steps: tensor([1000.0000,  960.0000,  888.8889,  727.2728])
+	 timestep shape: torch.Size([1, 3]), value: tensor([[1000., 1000., 1000.]], device='cuda:0')
+### wan_wrapper.py ###
+#### forward ####
+##### using kv cache #####
+##### model time: 0.2839837074279785 #####
+========= shapes =========
+noisy_image_or_video: torch.Size([1, 3, 16, 60, 104])
+noisy_image_or_video permute: torch.Size([1, 16, 3, 60, 104])
+t input_timestep: torch.Size([1, 3])
+context prompt_embeds: torch.Size([1, 512, 4096])
+seq_len: 32760
+kv_cache: 30
+kv_cache_dtype: <class 'dict'>
+@@@ k @@@
+@@@@ torch.Size([1, 32760, 12, 128]) -0.0038928985595703125 0.0 28753924 21565436 @@@@
+@@@ v @@@
+@@@@ torch.Size([1, 32760, 12, 128]) 0.0045318603515625 0.0 28753920 21565440 @@@@
+@@@ global_end_index @@@
+@@@@ torch.Size([1]) @@@@
+@@@ local_end_index @@@
+@@@@ torch.Size([1]) @@@@
+<class 'list'>
+30
+<class 'dict'>
+$$$ k $$$
+$$$$ torch.Size([1, 512, 12, 128]) 0.0302276611328125 0.05511474609375 0 786432 $$$$
+$$$ v $$$
+$$$$ torch.Size([1, 512, 12, 128]) 0.00014972686767578125 -4.762411117553711e-05 422 786010 $$$$
+$$$ is_init $$$
+$$$$ <class 'bool'> $$$$
+-------------------------
+flow_pred: torch.Size([1, 3, 16, 60, 104])
+=========================
+##### convert time: 0.00026535987854003906 #####
+pred_x0: torch.Size([1, 3, 16, 60, 104])
+#########################
+	 Transformer denoising step 1/4 completed in 0.30s
+	   ➕ Add noise for next step completed in 0.00s
+	 timestep shape: torch.Size([1, 3]), value: tensor([[960., 960., 960.]], device='cuda:0')
+### wan_wrapper.py ###
+#### forward ####
+##### using kv cache #####
+##### model time: 0.19889330863952637 #####
+========= shapes =========
+noisy_image_or_video: torch.Size([1, 3, 16, 60, 104])
+noisy_image_or_video permute: torch.Size([1, 16, 3, 60, 104])
+t input_timestep: torch.Size([1, 3])
+context prompt_embeds: torch.Size([1, 512, 4096])
+seq_len: 32760
+kv_cache: 30
+kv_cache_dtype: <class 'dict'>
+@@@ k @@@
+@@@@ torch.Size([1, 32760, 12, 128]) -0.004085540771484375 0.0 28753922 21565438 @@@@
+@@@ v @@@
+@@@@ torch.Size([1, 32760, 12, 128]) 0.00470733642578125 0.0 28753920 21565440 @@@@
+@@@ global_end_index @@@
+@@@@ torch.Size([1]) @@@@
+@@@ local_end_index @@@
+@@@@ torch.Size([1]) @@@@
+<class 'list'>
+30
+<class 'dict'>
+$$$ k $$$
+$$$$ torch.Size([1, 512, 12, 128]) 0.0302276611328125 0.05511474609375 0 786432 $$$$
+$$$ v $$$
+$$$$ torch.Size([1, 512, 12, 128]) 0.00014972686767578125 -4.762411117553711e-05 422 786010 $$$$
+$$$ is_init $$$
+$$$$ <class 'bool'> $$$$
+-------------------------
+flow_pred: torch.Size([1, 3, 16, 60, 104])
+=========================
+##### convert time: 0.00022721290588378906 #####
+pred_x0: torch.Size([1, 3, 16, 60, 104])
+#########################
+	 Transformer denoising step 2/4 completed in 0.21s
+	   ➕ Add noise for next step completed in 0.00s
+	 timestep shape: torch.Size([1, 3]), value: tensor([[888.8889, 888.8889, 888.8889]], device='cuda:0')
+### wan_wrapper.py ###
+#### forward ####
+##### using kv cache #####
+##### model time: 0.20117712020874023 #####
+========= shapes =========
+noisy_image_or_video: torch.Size([1, 3, 16, 60, 104])
+noisy_image_or_video permute: torch.Size([1, 16, 3, 60, 104])
+t input_timestep: torch.Size([1, 3])
+context prompt_embeds: torch.Size([1, 512, 4096])
+seq_len: 32760
+kv_cache: 30
+kv_cache_dtype: <class 'dict'>
+@@@ k @@@
+@@@@ torch.Size([1, 32760, 12, 128]) -0.004253387451171875 0.0 28753924 21565436 @@@@
+@@@ v @@@
+@@@@ torch.Size([1, 32760, 12, 128]) 0.004886627197265625 0.0 28753920 21565440 @@@@
+@@@ global_end_index @@@
+@@@@ torch.Size([1]) @@@@
+@@@ local_end_index @@@
+@@@@ torch.Size([1]) @@@@
+<class 'list'>
+30
+<class 'dict'>
+$$$ k $$$
+$$$$ torch.Size([1, 512, 12, 128]) 0.0302276611328125 0.05511474609375 0 786432 $$$$
+$$$ v $$$
+$$$$ torch.Size([1, 512, 12, 128]) 0.00014972686767578125 -4.762411117553711e-05 422 786010 $$$$
+$$$ is_init $$$
+$$$$ <class 'bool'> $$$$
+-------------------------
+flow_pred: torch.Size([1, 3, 16, 60, 104])
+=========================
+##### convert time: 0.00021648406982421875 #####
+pred_x0: torch.Size([1, 3, 16, 60, 104])
+#########################
+	 Transformer denoising step 3/4 completed in 0.22s
+	   ➕ Add noise for next step completed in 0.00s
+	 timestep shape: torch.Size([1, 3]), value: tensor([[727.2728, 727.2728, 727.2728]], device='cuda:0')
+### wan_wrapper.py ###
+#### forward ####
+##### using kv cache #####
+##### model time: 0.19343304634094238 #####
+========= shapes =========
+noisy_image_or_video: torch.Size([1, 3, 16, 60, 104])
+noisy_image_or_video permute: torch.Size([1, 16, 3, 60, 104])
+t input_timestep: torch.Size([1, 3])
+context prompt_embeds: torch.Size([1, 512, 4096])
+seq_len: 32760
+kv_cache: 30
+kv_cache_dtype: <class 'dict'>
+@@@ k @@@
+@@@@ torch.Size([1, 32760, 12, 128]) -0.00450897216796875 0.0 28753925 21565435 @@@@
+@@@ v @@@
+@@@@ torch.Size([1, 32760, 12, 128]) 0.00511932373046875 0.0 28753920 21565440 @@@@
+@@@ global_end_index @@@
+@@@@ torch.Size([1]) @@@@
+@@@ local_end_index @@@
+@@@@ torch.Size([1]) @@@@
+<class 'list'>
+30
+<class 'dict'>
+$$$ k $$$
+$$$$ torch.Size([1, 512, 12, 128]) 0.0302276611328125 0.05511474609375 0 786432 $$$$
+$$$ v $$$
+$$$$ torch.Size([1, 512, 12, 128]) 0.00014972686767578125 -4.762411117553711e-05 422 786010 $$$$
+$$$ is_init $$$
+$$$$ <class 'bool'> $$$$
+-------------------------
+flow_pred: torch.Size([1, 3, 16, 60, 104])
+=========================
+##### convert time: 0.0002231597900390625 #####
+pred_x0: torch.Size([1, 3, 16, 60, 104])
+#########################
+	 Transformer final denoising step 4/4 completed in 0.21s
+⚡ Block 3 denoising completed in 0.95s
+### wan_wrapper.py ###
+#### forward ####
+##### using kv cache #####
+##### model time: 0.1991891860961914 #####
+========= shapes =========
+noisy_image_or_video: torch.Size([1, 3, 16, 60, 104])
+noisy_image_or_video permute: torch.Size([1, 16, 3, 60, 104])
+t input_timestep: torch.Size([1, 3])
+context prompt_embeds: torch.Size([1, 512, 4096])
+seq_len: 32760
+kv_cache: 30
+kv_cache_dtype: <class 'dict'>
+@@@ k @@@
+@@@@ torch.Size([1, 32760, 12, 128]) -0.00481414794921875 0.0 28753925 21565435 @@@@
+@@@ v @@@
+@@@@ torch.Size([1, 32760, 12, 128]) 0.0032405853271484375 0.0 28753920 21565440 @@@@
+@@@ global_end_index @@@
+@@@@ torch.Size([1]) @@@@
+@@@ local_end_index @@@
+@@@@ torch.Size([1]) @@@@
+<class 'list'>
+30
+<class 'dict'>
+$$$ k $$$
+$$$$ torch.Size([1, 512, 12, 128]) 0.0302276611328125 0.05511474609375 0 786432 $$$$
+$$$ v $$$
+$$$$ torch.Size([1, 512, 12, 128]) 0.00014972686767578125 -4.762411117553711e-05 422 786010 $$$$
+$$$ is_init $$$
+$$$$ <class 'bool'> $$$$
+-------------------------
+flow_pred: torch.Size([1, 3, 16, 60, 104])
+=========================
+##### convert time: 0.00021600723266601562 #####
+pred_x0: torch.Size([1, 3, 16, 60, 104])
+#########################
+KV cache update for next block completed in 0.21s
+denoised_pred shape: torch.Size([1, 3, 16, 60, 104]), dtype: torch.float16
+decoding args: args.trt False, current_use_taehv False, vae_cache is None False
+🎨 Decoding block 3 to pixels...
+Length of feat_cache:  32
+🎨 Block 3 VAE decoding completed in 0.19s
+pixels shape after possible cropping: torch.Size([1, 12, 3, 480, 832]), block_frames: 12
+📡 Queueing 12 frames from block 3 for sending...
+	 Queueing frame 1/12 of block 3, shape: torch.Size([3, 480, 832]), dtype: torch.float32
+	 Queueing frame 2/12 of block 3, shape: torch.Size([3, 480, 832]), dtype: torch.float32
+	 Queueing frame 3/12 of block 3, shape: torch.Size([3, 480, 832]), dtype: torch.float32
+	 Queueing frame 4/12 of block 3, shape: torch.Size([3, 480, 832]), dtype: torch.float32
+	 Queueing frame 5/12 of block 3, shape: torch.Size([3, 480, 832]), dtype: torch.float32
+	 Queueing frame 6/12 of block 3, shape: torch.Size([3, 480, 832]), dtype: torch.float32
+	 Queueing frame 7/12 of block 3, shape: torch.Size([3, 480, 832]), dtype: torch.float32
+	 Queueing frame 8/12 of block 3, shape: torch.Size([3, 480, 832]), dtype: torch.float32
+	 Queueing frame 9/12 of block 3, shape: torch.Size([3, 480, 832]), dtype: torch.float32
+	 Queueing frame 10/12 of block 3, shape: torch.Size([3, 480, 832]), dtype: torch.float32
+	 Queueing frame 11/12 of block 3, shape: torch.Size([3, 480, 832]), dtype: torch.float32
+	 Queueing frame 12/12 of block 3, shape: torch.Size([3, 480, 832]), dtype: torch.float32
+✅ Block 3 completed in 1.74s (12 frames queued in 0.386s)
+In loop: idx 3, current_num_frames 3, current_start_frame 9
+🔄 Processing block 4/7
+noisy_input shape: torch.Size([1, 3, 16, 60, 104]), sharding: 9 to 12
+	 current_start_frame: 9, num_input_frames: 0, current_num_frames: 3
+pipeline denoising steps: tensor([1000.0000,  960.0000,  888.8889,  727.2728])
+	 timestep shape: torch.Size([1, 3]), value: tensor([[1000., 1000., 1000.]], device='cuda:0')
+### wan_wrapper.py ###
+#### forward ####
+##### using kv cache #####
+##### model time: 0.2938375473022461 #####
+========= shapes =========
+noisy_image_or_video: torch.Size([1, 3, 16, 60, 104])
+noisy_image_or_video permute: torch.Size([1, 16, 3, 60, 104])
+t input_timestep: torch.Size([1, 3])
+context prompt_embeds: torch.Size([1, 512, 4096])
+seq_len: 32760
+kv_cache: 30
+kv_cache_dtype: <class 'dict'>
+@@@ k @@@
+@@@@ torch.Size([1, 32760, 12, 128]) -0.0096893310546875 0.0 21565447 28753913 @@@@
+@@@ v @@@
+@@@@ torch.Size([1, 32760, 12, 128]) 0.005954742431640625 0.0 21565441 28753919 @@@@
+@@@ global_end_index @@@
+@@@@ torch.Size([1]) @@@@
+@@@ local_end_index @@@
+@@@@ torch.Size([1]) @@@@
+<class 'list'>
+30
+<class 'dict'>
+$$$ k $$$
+$$$$ torch.Size([1, 512, 12, 128]) 0.0302276611328125 0.05511474609375 0 786432 $$$$
+$$$ v $$$
+$$$$ torch.Size([1, 512, 12, 128]) 0.00014972686767578125 -4.762411117553711e-05 422 786010 $$$$
+$$$ is_init $$$
+$$$$ <class 'bool'> $$$$
+-------------------------
+flow_pred: torch.Size([1, 3, 16, 60, 104])
+=========================
+##### convert time: 0.00026917457580566406 #####
+pred_x0: torch.Size([1, 3, 16, 60, 104])
+#########################
+	 Transformer denoising step 1/4 completed in 0.31s
+	   ➕ Add noise for next step completed in 0.00s
+	 timestep shape: torch.Size([1, 3]), value: tensor([[960., 960., 960.]], device='cuda:0')
+### wan_wrapper.py ###
+#### forward ####
+##### using kv cache #####
+##### model time: 0.21785616874694824 #####
+========= shapes =========
+noisy_image_or_video: torch.Size([1, 3, 16, 60, 104])
+noisy_image_or_video permute: torch.Size([1, 16, 3, 60, 104])
+t input_timestep: torch.Size([1, 3])
+context prompt_embeds: torch.Size([1, 512, 4096])
+seq_len: 32760
+kv_cache: 30
+kv_cache_dtype: <class 'dict'>
+@@@ k @@@
+@@@@ torch.Size([1, 32760, 12, 128]) -0.00981903076171875 0.0 21565448 28753912 @@@@
+@@@ v @@@
+@@@@ torch.Size([1, 32760, 12, 128]) 0.0062255859375 0.0 21565440 28753920 @@@@
+@@@ global_end_index @@@
+@@@@ torch.Size([1]) @@@@
+@@@ local_end_index @@@
+@@@@ torch.Size([1]) @@@@
+<class 'list'>
+30
+<class 'dict'>
+$$$ k $$$
+$$$$ torch.Size([1, 512, 12, 128]) 0.0302276611328125 0.05511474609375 0 786432 $$$$
+$$$ v $$$
+$$$$ torch.Size([1, 512, 12, 128]) 0.00014972686767578125 -4.762411117553711e-05 422 786010 $$$$
+$$$ is_init $$$
+$$$$ <class 'bool'> $$$$
+-------------------------
+flow_pred: torch.Size([1, 3, 16, 60, 104])
+=========================
+##### convert time: 0.00021767616271972656 #####
+pred_x0: torch.Size([1, 3, 16, 60, 104])
+#########################
+	 Transformer denoising step 2/4 completed in 0.23s
+	   ➕ Add noise for next step completed in 0.00s
+	 timestep shape: torch.Size([1, 3]), value: tensor([[888.8889, 888.8889, 888.8889]], device='cuda:0')
+### wan_wrapper.py ###
+#### forward ####
+##### using kv cache #####
+##### model time: 0.21712851524353027 #####
+========= shapes =========
+noisy_image_or_video: torch.Size([1, 3, 16, 60, 104])
+noisy_image_or_video permute: torch.Size([1, 16, 3, 60, 104])
+t input_timestep: torch.Size([1, 3])
+context prompt_embeds: torch.Size([1, 512, 4096])
+seq_len: 32760
+kv_cache: 30
+kv_cache_dtype: <class 'dict'>
+@@@ k @@@
+@@@@ torch.Size([1, 32760, 12, 128]) -0.0098876953125 0.0 21565445 28753915 @@@@
+@@@ v @@@
+@@@@ torch.Size([1, 32760, 12, 128]) 0.006580352783203125 0.0 21565440 28753920 @@@@
+@@@ global_end_index @@@
+@@@@ torch.Size([1]) @@@@
+@@@ local_end_index @@@
+@@@@ torch.Size([1]) @@@@
+<class 'list'>
+30
+<class 'dict'>
+$$$ k $$$
+$$$$ torch.Size([1, 512, 12, 128]) 0.0302276611328125 0.05511474609375 0 786432 $$$$
+$$$ v $$$
+$$$$ torch.Size([1, 512, 12, 128]) 0.00014972686767578125 -4.762411117553711e-05 422 786010 $$$$
+$$$ is_init $$$
+$$$$ <class 'bool'> $$$$
+-------------------------
+flow_pred: torch.Size([1, 3, 16, 60, 104])
+=========================
+##### convert time: 0.00021505355834960938 #####
+pred_x0: torch.Size([1, 3, 16, 60, 104])
+#########################
+	 Transformer denoising step 3/4 completed in 0.23s
+	   ➕ Add noise for next step completed in 0.00s
+	 timestep shape: torch.Size([1, 3]), value: tensor([[727.2728, 727.2728, 727.2728]], device='cuda:0')
+### wan_wrapper.py ###
+#### forward ####
+##### using kv cache #####
+##### model time: 0.21831488609313965 #####
+========= shapes =========
+noisy_image_or_video: torch.Size([1, 3, 16, 60, 104])
+noisy_image_or_video permute: torch.Size([1, 16, 3, 60, 104])
+t input_timestep: torch.Size([1, 3])
+context prompt_embeds: torch.Size([1, 512, 4096])
+seq_len: 32760
+kv_cache: 30
+kv_cache_dtype: <class 'dict'>
+@@@ k @@@
+@@@@ torch.Size([1, 32760, 12, 128]) -0.01001739501953125 0.0 21565447 28753913 @@@@
+@@@ v @@@
+@@@@ torch.Size([1, 32760, 12, 128]) 0.006618499755859375 0.0 21565440 28753920 @@@@
+@@@ global_end_index @@@
+@@@@ torch.Size([1]) @@@@
+@@@ local_end_index @@@
+@@@@ torch.Size([1]) @@@@
+<class 'list'>
+30
+<class 'dict'>
+$$$ k $$$
+$$$$ torch.Size([1, 512, 12, 128]) 0.0302276611328125 0.05511474609375 0 786432 $$$$
+$$$ v $$$
+$$$$ torch.Size([1, 512, 12, 128]) 0.00014972686767578125 -4.762411117553711e-05 422 786010 $$$$
+$$$ is_init $$$
+$$$$ <class 'bool'> $$$$
+-------------------------
+flow_pred: torch.Size([1, 3, 16, 60, 104])
+=========================
+##### convert time: 0.00021457672119140625 #####
+pred_x0: torch.Size([1, 3, 16, 60, 104])
+#########################
+	 Transformer final denoising step 4/4 completed in 0.23s
+⚡ Block 4 denoising completed in 1.03s
+### wan_wrapper.py ###
+#### forward ####
+##### using kv cache #####
+##### model time: 0.22072529792785645 #####
+========= shapes =========
+noisy_image_or_video: torch.Size([1, 3, 16, 60, 104])
+noisy_image_or_video permute: torch.Size([1, 16, 3, 60, 104])
+t input_timestep: torch.Size([1, 3])
+context prompt_embeds: torch.Size([1, 512, 4096])
+seq_len: 32760
+kv_cache: 30
+kv_cache_dtype: <class 'dict'>
+@@@ k @@@
+@@@@ torch.Size([1, 32760, 12, 128]) -0.010040283203125 0.0 21565447 28753913 @@@@
+@@@ v @@@
+@@@@ torch.Size([1, 32760, 12, 128]) 0.0045623779296875 0.0 21565440 28753920 @@@@
+@@@ global_end_index @@@
+@@@@ torch.Size([1]) @@@@
+@@@ local_end_index @@@
+@@@@ torch.Size([1]) @@@@
+<class 'list'>
+30
+<class 'dict'>
+$$$ k $$$
+$$$$ torch.Size([1, 512, 12, 128]) 0.0302276611328125 0.05511474609375 0 786432 $$$$
+$$$ v $$$
+$$$$ torch.Size([1, 512, 12, 128]) 0.00014972686767578125 -4.762411117553711e-05 422 786010 $$$$
+$$$ is_init $$$
+$$$$ <class 'bool'> $$$$
+-------------------------
+flow_pred: torch.Size([1, 3, 16, 60, 104])
+=========================
+##### convert time: 0.00026035308837890625 #####
+pred_x0: torch.Size([1, 3, 16, 60, 104])
+#########################
+KV cache update for next block completed in 0.24s
+denoised_pred shape: torch.Size([1, 3, 16, 60, 104]), dtype: torch.float16
+decoding args: args.trt False, current_use_taehv False, vae_cache is None False
+🎨 Decoding block 4 to pixels...
+Length of feat_cache:  32
+🎨 Block 4 VAE decoding completed in 0.19s
+pixels shape after possible cropping: torch.Size([1, 12, 3, 480, 832]), block_frames: 12
+📡 Queueing 12 frames from block 4 for sending...
+	 Queueing frame 1/12 of block 4, shape: torch.Size([3, 480, 832]), dtype: torch.float32
+	 Queueing frame 2/12 of block 4, shape: torch.Size([3, 480, 832]), dtype: torch.float32
+	 Queueing frame 3/12 of block 4, shape: torch.Size([3, 480, 832]), dtype: torch.float32
+	 Queueing frame 4/12 of block 4, shape: torch.Size([3, 480, 832]), dtype: torch.float32
+	 Queueing frame 5/12 of block 4, shape: torch.Size([3, 480, 832]), dtype: torch.float32
+	 Queueing frame 6/12 of block 4, shape: torch.Size([3, 480, 832]), dtype: torch.float32
+	 Queueing frame 7/12 of block 4, shape: torch.Size([3, 480, 832]), dtype: torch.float32
+	 Queueing frame 8/12 of block 4, shape: torch.Size([3, 480, 832]), dtype: torch.float32
+	 Queueing frame 9/12 of block 4, shape: torch.Size([3, 480, 832]), dtype: torch.float32
+	 Queueing frame 10/12 of block 4, shape: torch.Size([3, 480, 832]), dtype: torch.float32
+	 Queueing frame 11/12 of block 4, shape: torch.Size([3, 480, 832]), dtype: torch.float32
+	 Queueing frame 12/12 of block 4, shape: torch.Size([3, 480, 832]), dtype: torch.float32
+✅ Block 4 completed in 1.83s (12 frames queued in 0.373s)
+In loop: idx 4, current_num_frames 3, current_start_frame 12
+🔄 Processing block 5/7
+noisy_input shape: torch.Size([1, 3, 16, 60, 104]), sharding: 12 to 15
+	 current_start_frame: 12, num_input_frames: 0, current_num_frames: 3
+pipeline denoising steps: tensor([1000.0000,  960.0000,  888.8889,  727.2728])
+	 timestep shape: torch.Size([1, 3]), value: tensor([[1000., 1000., 1000.]], device='cuda:0')
+### wan_wrapper.py ###
+#### forward ####
+##### using kv cache #####
+##### model time: 0.3064913749694824 #####
+========= shapes =========
+noisy_image_or_video: torch.Size([1, 3, 16, 60, 104])
+noisy_image_or_video permute: torch.Size([1, 16, 3, 60, 104])
+t input_timestep: torch.Size([1, 3])
+context prompt_embeds: torch.Size([1, 512, 4096])
+seq_len: 32760
+kv_cache: 30
+kv_cache_dtype: <class 'dict'>
+@@@ k @@@
+@@@@ torch.Size([1, 32760, 12, 128]) -0.01401519775390625 0.0 14376967 35942393 @@@@
+@@@ v @@@
+@@@@ torch.Size([1, 32760, 12, 128]) 0.007579803466796875 0.0 14376960 35942400 @@@@
+@@@ global_end_index @@@
+@@@@ torch.Size([1]) @@@@
+@@@ local_end_index @@@
+@@@@ torch.Size([1]) @@@@
+<class 'list'>
+30
+<class 'dict'>
+$$$ k $$$
+$$$$ torch.Size([1, 512, 12, 128]) 0.0302276611328125 0.05511474609375 0 786432 $$$$
+$$$ v $$$
+$$$$ torch.Size([1, 512, 12, 128]) 0.00014972686767578125 -4.762411117553711e-05 422 786010 $$$$
+$$$ is_init $$$
+$$$$ <class 'bool'> $$$$
+-------------------------
+flow_pred: torch.Size([1, 3, 16, 60, 104])
+=========================
+##### convert time: 0.00032258033752441406 #####
+pred_x0: torch.Size([1, 3, 16, 60, 104])
+#########################
+	 Transformer denoising step 1/4 completed in 0.32s
+	   ➕ Add noise for next step completed in 0.00s
+	 timestep shape: torch.Size([1, 3]), value: tensor([[960., 960., 960.]], device='cuda:0')
+### wan_wrapper.py ###
+#### forward ####
+##### using kv cache #####
+##### model time: 0.23978376388549805 #####
+========= shapes =========
+noisy_image_or_video: torch.Size([1, 3, 16, 60, 104])
+noisy_image_or_video permute: torch.Size([1, 16, 3, 60, 104])
+t input_timestep: torch.Size([1, 3])
+context prompt_embeds: torch.Size([1, 512, 4096])
+seq_len: 32760
+kv_cache: 30
+kv_cache_dtype: <class 'dict'>
+@@@ k @@@
+@@@@ torch.Size([1, 32760, 12, 128]) -0.0140380859375 0.0 14376969 35942391 @@@@
+@@@ v @@@
+@@@@ torch.Size([1, 32760, 12, 128]) 0.007556915283203125 0.0 14376960 35942400 @@@@
+@@@ global_end_index @@@
+@@@@ torch.Size([1]) @@@@
+@@@ local_end_index @@@
+@@@@ torch.Size([1]) @@@@
+<class 'list'>
+30
+<class 'dict'>
+$$$ k $$$
+$$$$ torch.Size([1, 512, 12, 128]) 0.0302276611328125 0.05511474609375 0 786432 $$$$
+$$$ v $$$
+$$$$ torch.Size([1, 512, 12, 128]) 0.00014972686767578125 -4.762411117553711e-05 422 786010 $$$$
+$$$ is_init $$$
+$$$$ <class 'bool'> $$$$
+-------------------------
+flow_pred: torch.Size([1, 3, 16, 60, 104])
+=========================
+##### convert time: 0.0002129077911376953 #####
+pred_x0: torch.Size([1, 3, 16, 60, 104])
+#########################
+	 Transformer denoising step 2/4 completed in 0.26s
+	   ➕ Add noise for next step completed in 0.00s
+	 timestep shape: torch.Size([1, 3]), value: tensor([[888.8889, 888.8889, 888.8889]], device='cuda:0')
+### wan_wrapper.py ###
+#### forward ####
+##### using kv cache #####
+##### model time: 0.23941683769226074 #####
+========= shapes =========
+noisy_image_or_video: torch.Size([1, 3, 16, 60, 104])
+noisy_image_or_video permute: torch.Size([1, 16, 3, 60, 104])
+t input_timestep: torch.Size([1, 3])
+context prompt_embeds: torch.Size([1, 512, 4096])
+seq_len: 32760
+kv_cache: 30
+kv_cache_dtype: <class 'dict'>
+@@@ k @@@
+@@@@ torch.Size([1, 32760, 12, 128]) -0.01407623291015625 0.0 14376968 35942392 @@@@
+@@@ v @@@
+@@@@ torch.Size([1, 32760, 12, 128]) 0.007656097412109375 0.0 14376960 35942400 @@@@
+@@@ global_end_index @@@
+@@@@ torch.Size([1]) @@@@
+@@@ local_end_index @@@
+@@@@ torch.Size([1]) @@@@
+<class 'list'>
+30
+<class 'dict'>
+$$$ k $$$
+$$$$ torch.Size([1, 512, 12, 128]) 0.0302276611328125 0.05511474609375 0 786432 $$$$
+$$$ v $$$
+$$$$ torch.Size([1, 512, 12, 128]) 0.00014972686767578125 -4.762411117553711e-05 422 786010 $$$$
+$$$ is_init $$$
+$$$$ <class 'bool'> $$$$
+-------------------------
+flow_pred: torch.Size([1, 3, 16, 60, 104])
+=========================
+##### convert time: 0.0002067089080810547 #####
+pred_x0: torch.Size([1, 3, 16, 60, 104])
+#########################
+	 Transformer denoising step 3/4 completed in 0.26s
+	   ➕ Add noise for next step completed in 0.00s
+	 timestep shape: torch.Size([1, 3]), value: tensor([[727.2728, 727.2728, 727.2728]], device='cuda:0')
+### wan_wrapper.py ###
+#### forward ####
+##### using kv cache #####
+##### model time: 0.2396543025970459 #####
+========= shapes =========
+noisy_image_or_video: torch.Size([1, 3, 16, 60, 104])
+noisy_image_or_video permute: torch.Size([1, 16, 3, 60, 104])
+t input_timestep: torch.Size([1, 3])
+context prompt_embeds: torch.Size([1, 512, 4096])
+seq_len: 32760
+kv_cache: 30
+kv_cache_dtype: <class 'dict'>
+@@@ k @@@
+@@@@ torch.Size([1, 32760, 12, 128]) -0.0140838623046875 0.0 14376968 35942392 @@@@
+@@@ v @@@
+@@@@ torch.Size([1, 32760, 12, 128]) 0.0079345703125 0.0 14376960 35942400 @@@@
+@@@ global_end_index @@@
+@@@@ torch.Size([1]) @@@@
+@@@ local_end_index @@@
+@@@@ torch.Size([1]) @@@@
+<class 'list'>
+30
+<class 'dict'>
+$$$ k $$$
+$$$$ torch.Size([1, 512, 12, 128]) 0.0302276611328125 0.05511474609375 0 786432 $$$$
+$$$ v $$$
+$$$$ torch.Size([1, 512, 12, 128]) 0.00014972686767578125 -4.762411117553711e-05 422 786010 $$$$
+$$$ is_init $$$
+$$$$ <class 'bool'> $$$$
+-------------------------
+flow_pred: torch.Size([1, 3, 16, 60, 104])
+=========================
+##### convert time: 0.0002186298370361328 #####
+pred_x0: torch.Size([1, 3, 16, 60, 104])
+#########################
+	 Transformer final denoising step 4/4 completed in 0.26s
+⚡ Block 5 denoising completed in 1.11s
+### wan_wrapper.py ###
+#### forward ####
+##### using kv cache #####
+##### model time: 0.24085760116577148 #####
+========= shapes =========
+noisy_image_or_video: torch.Size([1, 3, 16, 60, 104])
+noisy_image_or_video permute: torch.Size([1, 16, 3, 60, 104])
+t input_timestep: torch.Size([1, 3])
+context prompt_embeds: torch.Size([1, 512, 4096])
+seq_len: 32760
+kv_cache: 30
+kv_cache_dtype: <class 'dict'>
+@@@ k @@@
+@@@@ torch.Size([1, 32760, 12, 128]) -0.01377105712890625 0.0 14376969 35942391 @@@@
+@@@ v @@@
+@@@@ torch.Size([1, 32760, 12, 128]) 0.0060272216796875 0.0 14376960 35942400 @@@@
+@@@ global_end_index @@@
+@@@@ torch.Size([1]) @@@@
+@@@ local_end_index @@@
+@@@@ torch.Size([1]) @@@@
+<class 'list'>
+30
+<class 'dict'>
+$$$ k $$$
+$$$$ torch.Size([1, 512, 12, 128]) 0.0302276611328125 0.05511474609375 0 786432 $$$$
+$$$ v $$$
+$$$$ torch.Size([1, 512, 12, 128]) 0.00014972686767578125 -4.762411117553711e-05 422 786010 $$$$
+$$$ is_init $$$
+$$$$ <class 'bool'> $$$$
+-------------------------
+flow_pred: torch.Size([1, 3, 16, 60, 104])
+=========================
+##### convert time: 0.00020742416381835938 #####
+pred_x0: torch.Size([1, 3, 16, 60, 104])
+#########################
+KV cache update for next block completed in 0.26s
+denoised_pred shape: torch.Size([1, 3, 16, 60, 104]), dtype: torch.float16
+decoding args: args.trt False, current_use_taehv False, vae_cache is None False
+🎨 Decoding block 5 to pixels...
+Length of feat_cache:  32
+🎨 Block 5 VAE decoding completed in 0.19s
+pixels shape after possible cropping: torch.Size([1, 12, 3, 480, 832]), block_frames: 12
+📡 Queueing 12 frames from block 5 for sending...
+	 Queueing frame 1/12 of block 5, shape: torch.Size([3, 480, 832]), dtype: torch.float32
+	 Queueing frame 2/12 of block 5, shape: torch.Size([3, 480, 832]), dtype: torch.float32
+	 Queueing frame 3/12 of block 5, shape: torch.Size([3, 480, 832]), dtype: torch.float32
+	 Queueing frame 4/12 of block 5, shape: torch.Size([3, 480, 832]), dtype: torch.float32
+	 Queueing frame 5/12 of block 5, shape: torch.Size([3, 480, 832]), dtype: torch.float32
+	 Queueing frame 6/12 of block 5, shape: torch.Size([3, 480, 832]), dtype: torch.float32
+	 Queueing frame 7/12 of block 5, shape: torch.Size([3, 480, 832]), dtype: torch.float32
+	 Queueing frame 8/12 of block 5, shape: torch.Size([3, 480, 832]), dtype: torch.float32
+	 Queueing frame 9/12 of block 5, shape: torch.Size([3, 480, 832]), dtype: torch.float32
+	 Queueing frame 10/12 of block 5, shape: torch.Size([3, 480, 832]), dtype: torch.float32
+	 Queueing frame 11/12 of block 5, shape: torch.Size([3, 480, 832]), dtype: torch.float32
+	 Queueing frame 12/12 of block 5, shape: torch.Size([3, 480, 832]), dtype: torch.float32
+✅ Block 5 completed in 1.96s (12 frames queued in 0.406s)
+In loop: idx 5, current_num_frames 3, current_start_frame 15
+🔄 Processing block 6/7
+noisy_input shape: torch.Size([1, 3, 16, 60, 104]), sharding: 15 to 18
+	 current_start_frame: 15, num_input_frames: 0, current_num_frames: 3
+pipeline denoising steps: tensor([1000.0000,  960.0000,  888.8889,  727.2728])
+	 timestep shape: torch.Size([1, 3]), value: tensor([[1000., 1000., 1000.]], device='cuda:0')
+### wan_wrapper.py ###
+#### forward ####
+##### using kv cache #####
+##### model time: 0.3119814395904541 #####
+========= shapes =========
+noisy_image_or_video: torch.Size([1, 3, 16, 60, 104])
+noisy_image_or_video permute: torch.Size([1, 16, 3, 60, 104])
+t input_timestep: torch.Size([1, 3])
+context prompt_embeds: torch.Size([1, 512, 4096])
+seq_len: 32760
+kv_cache: 30
+kv_cache_dtype: <class 'dict'>
+@@@ k @@@
+@@@@ torch.Size([1, 32760, 12, 128]) -0.01430511474609375 0.0 7188491 43130869 @@@@
+@@@ v @@@
+@@@@ torch.Size([1, 32760, 12, 128]) 0.00897979736328125 0.0 7188480 43130880 @@@@
+@@@ global_end_index @@@
+@@@@ torch.Size([1]) @@@@
+@@@ local_end_index @@@
+@@@@ torch.Size([1]) @@@@
+<class 'list'>
+30
+<class 'dict'>
+$$$ k $$$
+$$$$ torch.Size([1, 512, 12, 128]) 0.0302276611328125 0.05511474609375 0 786432 $$$$
+$$$ v $$$
+$$$$ torch.Size([1, 512, 12, 128]) 0.00014972686767578125 -4.762411117553711e-05 422 786010 $$$$
+$$$ is_init $$$
+$$$$ <class 'bool'> $$$$
+-------------------------
+flow_pred: torch.Size([1, 3, 16, 60, 104])
+=========================
+##### convert time: 0.0002980232238769531 #####
+pred_x0: torch.Size([1, 3, 16, 60, 104])
+#########################
+	 Transformer denoising step 1/4 completed in 0.33s
+	   ➕ Add noise for next step completed in 0.00s
+	 timestep shape: torch.Size([1, 3]), value: tensor([[960., 960., 960.]], device='cuda:0')
+### wan_wrapper.py ###
+#### forward ####
+##### using kv cache #####
+##### model time: 0.2639906406402588 #####
+========= shapes =========
+noisy_image_or_video: torch.Size([1, 3, 16, 60, 104])
+noisy_image_or_video permute: torch.Size([1, 16, 3, 60, 104])
+t input_timestep: torch.Size([1, 3])
+context prompt_embeds: torch.Size([1, 512, 4096])
+seq_len: 32760
+kv_cache: 30
+kv_cache_dtype: <class 'dict'>
+@@@ k @@@
+@@@@ torch.Size([1, 32760, 12, 128]) -0.0143890380859375 0.0 7188489 43130871 @@@@
+@@@ v @@@
+@@@@ torch.Size([1, 32760, 12, 128]) 0.00899505615234375 0.0 7188480 43130880 @@@@
+@@@ global_end_index @@@
+@@@@ torch.Size([1]) @@@@
+@@@ local_end_index @@@
+@@@@ torch.Size([1]) @@@@
+<class 'list'>
+30
+<class 'dict'>
+$$$ k $$$
+$$$$ torch.Size([1, 512, 12, 128]) 0.0302276611328125 0.05511474609375 0 786432 $$$$
+$$$ v $$$
+$$$$ torch.Size([1, 512, 12, 128]) 0.00014972686767578125 -4.762411117553711e-05 422 786010 $$$$
+$$$ is_init $$$
+$$$$ <class 'bool'> $$$$
+-------------------------
+flow_pred: torch.Size([1, 3, 16, 60, 104])
+=========================
+##### convert time: 0.00021529197692871094 #####
+pred_x0: torch.Size([1, 3, 16, 60, 104])
+#########################
+	 Transformer denoising step 2/4 completed in 0.28s
+	   ➕ Add noise for next step completed in 0.00s
+	 timestep shape: torch.Size([1, 3]), value: tensor([[888.8889, 888.8889, 888.8889]], device='cuda:0')
+### wan_wrapper.py ###
+#### forward ####
+##### using kv cache #####
+##### model time: 0.26757001876831055 #####
+========= shapes =========
+noisy_image_or_video: torch.Size([1, 3, 16, 60, 104])
+noisy_image_or_video permute: torch.Size([1, 16, 3, 60, 104])
+t input_timestep: torch.Size([1, 3])
+context prompt_embeds: torch.Size([1, 512, 4096])
+seq_len: 32760
+kv_cache: 30
+kv_cache_dtype: <class 'dict'>
+@@@ k @@@
+@@@@ torch.Size([1, 32760, 12, 128]) -0.0144805908203125 0.0 7188490 43130870 @@@@
+@@@ v @@@
+@@@@ torch.Size([1, 32760, 12, 128]) 0.0092010498046875 0.0 7188480 43130880 @@@@
+@@@ global_end_index @@@
+@@@@ torch.Size([1]) @@@@
+@@@ local_end_index @@@
+@@@@ torch.Size([1]) @@@@
+<class 'list'>
+30
+<class 'dict'>
+$$$ k $$$
+$$$$ torch.Size([1, 512, 12, 128]) 0.0302276611328125 0.05511474609375 0 786432 $$$$
+$$$ v $$$
+$$$$ torch.Size([1, 512, 12, 128]) 0.00014972686767578125 -4.762411117553711e-05 422 786010 $$$$
+$$$ is_init $$$
+$$$$ <class 'bool'> $$$$
+-------------------------
+flow_pred: torch.Size([1, 3, 16, 60, 104])
+=========================
+##### convert time: 0.00022482872009277344 #####
+pred_x0: torch.Size([1, 3, 16, 60, 104])
+#########################
+	 Transformer denoising step 3/4 completed in 0.29s
+	   ➕ Add noise for next step completed in 0.00s
+	 timestep shape: torch.Size([1, 3]), value: tensor([[727.2728, 727.2728, 727.2728]], device='cuda:0')
+### wan_wrapper.py ###
+#### forward ####
+##### using kv cache #####
+##### model time: 0.2633857727050781 #####
+========= shapes =========
+noisy_image_or_video: torch.Size([1, 3, 16, 60, 104])
+noisy_image_or_video permute: torch.Size([1, 16, 3, 60, 104])
+t input_timestep: torch.Size([1, 3])
+context prompt_embeds: torch.Size([1, 512, 4096])
+seq_len: 32760
+kv_cache: 30
+kv_cache_dtype: <class 'dict'>
+@@@ k @@@
+@@@@ torch.Size([1, 32760, 12, 128]) -0.014556884765625 0.0 7188490 43130870 @@@@
+@@@ v @@@
+@@@@ torch.Size([1, 32760, 12, 128]) 0.00952911376953125 0.0 7188480 43130880 @@@@
+@@@ global_end_index @@@
+@@@@ torch.Size([1]) @@@@
+@@@ local_end_index @@@
+@@@@ torch.Size([1]) @@@@
+<class 'list'>
+30
+<class 'dict'>
+$$$ k $$$
+$$$$ torch.Size([1, 512, 12, 128]) 0.0302276611328125 0.05511474609375 0 786432 $$$$
+$$$ v $$$
+$$$$ torch.Size([1, 512, 12, 128]) 0.00014972686767578125 -4.762411117553711e-05 422 786010 $$$$
+$$$ is_init $$$
+$$$$ <class 'bool'> $$$$
+-------------------------
+flow_pred: torch.Size([1, 3, 16, 60, 104])
+=========================
+##### convert time: 0.00022745132446289062 #####
+pred_x0: torch.Size([1, 3, 16, 60, 104])
+#########################
+	 Transformer final denoising step 4/4 completed in 0.28s
+⚡ Block 6 denoising completed in 1.19s
+### wan_wrapper.py ###
+#### forward ####
+##### using kv cache #####
+##### model time: 0.26283979415893555 #####
+========= shapes =========
+noisy_image_or_video: torch.Size([1, 3, 16, 60, 104])
+noisy_image_or_video permute: torch.Size([1, 16, 3, 60, 104])
+t input_timestep: torch.Size([1, 3])
+context prompt_embeds: torch.Size([1, 512, 4096])
+seq_len: 32760
+kv_cache: 30
+kv_cache_dtype: <class 'dict'>
+@@@ k @@@
+@@@@ torch.Size([1, 32760, 12, 128]) -0.01514434814453125 0.0 7188489 43130871 @@@@
+@@@ v @@@
+@@@@ torch.Size([1, 32760, 12, 128]) 0.007534027099609375 0.0 7188481 43130879 @@@@
+@@@ global_end_index @@@
+@@@@ torch.Size([1]) @@@@
+@@@ local_end_index @@@
+@@@@ torch.Size([1]) @@@@
+<class 'list'>
+30
+<class 'dict'>
+$$$ k $$$
+$$$$ torch.Size([1, 512, 12, 128]) 0.0302276611328125 0.05511474609375 0 786432 $$$$
+$$$ v $$$
+$$$$ torch.Size([1, 512, 12, 128]) 0.00014972686767578125 -4.762411117553711e-05 422 786010 $$$$
+$$$ is_init $$$
+$$$$ <class 'bool'> $$$$
+-------------------------
+flow_pred: torch.Size([1, 3, 16, 60, 104])
+=========================
+##### convert time: 0.00021839141845703125 #####
+pred_x0: torch.Size([1, 3, 16, 60, 104])
+#########################
+KV cache update for next block completed in 0.28s
+denoised_pred shape: torch.Size([1, 3, 16, 60, 104]), dtype: torch.float16
+decoding args: args.trt False, current_use_taehv False, vae_cache is None False
+🎨 Decoding block 6 to pixels...
+Length of feat_cache:  32
+🎨 Block 6 VAE decoding completed in 0.19s
+pixels shape after possible cropping: torch.Size([1, 12, 3, 480, 832]), block_frames: 12
+📡 Queueing 12 frames from block 6 for sending...
+	 Queueing frame 1/12 of block 6, shape: torch.Size([3, 480, 832]), dtype: torch.float32
+	 Queueing frame 2/12 of block 6, shape: torch.Size([3, 480, 832]), dtype: torch.float32
+	 Queueing frame 3/12 of block 6, shape: torch.Size([3, 480, 832]), dtype: torch.float32
+	 Queueing frame 4/12 of block 6, shape: torch.Size([3, 480, 832]), dtype: torch.float32
+	 Queueing frame 5/12 of block 6, shape: torch.Size([3, 480, 832]), dtype: torch.float32
+	 Queueing frame 6/12 of block 6, shape: torch.Size([3, 480, 832]), dtype: torch.float32
+	 Queueing frame 7/12 of block 6, shape: torch.Size([3, 480, 832]), dtype: torch.float32
+	 Queueing frame 8/12 of block 6, shape: torch.Size([3, 480, 832]), dtype: torch.float32
+	 Queueing frame 9/12 of block 6, shape: torch.Size([3, 480, 832]), dtype: torch.float32
+	 Queueing frame 10/12 of block 6, shape: torch.Size([3, 480, 832]), dtype: torch.float32
+	 Queueing frame 11/12 of block 6, shape: torch.Size([3, 480, 832]), dtype: torch.float32
+	 Queueing frame 12/12 of block 6, shape: torch.Size([3, 480, 832]), dtype: torch.float32
+✅ Block 6 completed in 2.05s (12 frames queued in 0.388s)
+In loop: idx 6, current_num_frames 3, current_start_frame 18
+🔄 Processing block 7/7
+noisy_input shape: torch.Size([1, 3, 16, 60, 104]), sharding: 18 to 21
+	 current_start_frame: 18, num_input_frames: 0, current_num_frames: 3
+pipeline denoising steps: tensor([1000.0000,  960.0000,  888.8889,  727.2728])
+	 timestep shape: torch.Size([1, 3]), value: tensor([[1000., 1000., 1000.]], device='cuda:0')
+### wan_wrapper.py ###
+#### forward ####
+##### using kv cache #####
+##### model time: 0.3396475315093994 #####
+========= shapes =========
+noisy_image_or_video: torch.Size([1, 3, 16, 60, 104])
+noisy_image_or_video permute: torch.Size([1, 16, 3, 60, 104])
+t input_timestep: torch.Size([1, 3])
+context prompt_embeds: torch.Size([1, 512, 4096])
+seq_len: 32760
+kv_cache: 30
+kv_cache_dtype: <class 'dict'>
+@@@ k @@@
+@@@@ torch.Size([1, 32760, 12, 128]) -0.0163421630859375 -0.0017795562744140625 12 50319348 @@@@
+@@@ v @@@
+@@@@ torch.Size([1, 32760, 12, 128]) 0.0102996826171875 0.00525665283203125 2 50319358 @@@@
+@@@ global_end_index @@@
+@@@@ torch.Size([1]) @@@@
+@@@ local_end_index @@@
+@@@@ torch.Size([1]) @@@@
+<class 'list'>
+30
+<class 'dict'>
+$$$ k $$$
+$$$$ torch.Size([1, 512, 12, 128]) 0.0302276611328125 0.05511474609375 0 786432 $$$$
+$$$ v $$$
+$$$$ torch.Size([1, 512, 12, 128]) 0.00014972686767578125 -4.762411117553711e-05 422 786010 $$$$
+$$$ is_init $$$
+$$$$ <class 'bool'> $$$$
+-------------------------
+flow_pred: torch.Size([1, 3, 16, 60, 104])
+=========================
+##### convert time: 0.00025653839111328125 #####
+pred_x0: torch.Size([1, 3, 16, 60, 104])
+#########################
+	 Transformer denoising step 1/4 completed in 0.36s
+	   ➕ Add noise for next step completed in 0.00s
+	 timestep shape: torch.Size([1, 3]), value: tensor([[960., 960., 960.]], device='cuda:0')
+### wan_wrapper.py ###
+#### forward ####
+##### using kv cache #####
+##### model time: 0.2874019145965576 #####
+========= shapes =========
+noisy_image_or_video: torch.Size([1, 3, 16, 60, 104])
+noisy_image_or_video permute: torch.Size([1, 16, 3, 60, 104])
+t input_timestep: torch.Size([1, 3])
+context prompt_embeds: torch.Size([1, 512, 4096])
+seq_len: 32760
+kv_cache: 30
+kv_cache_dtype: <class 'dict'>
+@@@ k @@@
+@@@@ torch.Size([1, 32760, 12, 128]) -0.016448974609375 -0.0018243789672851562 10 50319350 @@@@
+@@@ v @@@
+@@@@ torch.Size([1, 32760, 12, 128]) 0.01052093505859375 0.00534820556640625 1 50319359 @@@@
+@@@ global_end_index @@@
+@@@@ torch.Size([1]) @@@@
+@@@ local_end_index @@@
+@@@@ torch.Size([1]) @@@@
+<class 'list'>
+30
+<class 'dict'>
+$$$ k $$$
+$$$$ torch.Size([1, 512, 12, 128]) 0.0302276611328125 0.05511474609375 0 786432 $$$$
+$$$ v $$$
+$$$$ torch.Size([1, 512, 12, 128]) 0.00014972686767578125 -4.762411117553711e-05 422 786010 $$$$
+$$$ is_init $$$
+$$$$ <class 'bool'> $$$$
+-------------------------
+flow_pred: torch.Size([1, 3, 16, 60, 104])
+=========================
+##### convert time: 0.0002200603485107422 #####
+pred_x0: torch.Size([1, 3, 16, 60, 104])
+#########################
+	 Transformer denoising step 2/4 completed in 0.31s
+	   ➕ Add noise for next step completed in 0.00s
+	 timestep shape: torch.Size([1, 3]), value: tensor([[888.8889, 888.8889, 888.8889]], device='cuda:0')
+### wan_wrapper.py ###
+#### forward ####
+##### using kv cache #####
+##### model time: 0.28830528259277344 #####
+========= shapes =========
+noisy_image_or_video: torch.Size([1, 3, 16, 60, 104])
+noisy_image_or_video permute: torch.Size([1, 16, 3, 60, 104])
+t input_timestep: torch.Size([1, 3])
+context prompt_embeds: torch.Size([1, 512, 4096])
+seq_len: 32760
+kv_cache: 30
+kv_cache_dtype: <class 'dict'>
+@@@ k @@@
+@@@@ torch.Size([1, 32760, 12, 128]) -0.0165557861328125 -0.0019130706787109375 10 50319350 @@@@
+@@@ v @@@
+@@@@ torch.Size([1, 32760, 12, 128]) 0.0105438232421875 0.0055694580078125 2 50319358 @@@@
+@@@ global_end_index @@@
+@@@@ torch.Size([1]) @@@@
+@@@ local_end_index @@@
+@@@@ torch.Size([1]) @@@@
+<class 'list'>
+30
+<class 'dict'>
+$$$ k $$$
+$$$$ torch.Size([1, 512, 12, 128]) 0.0302276611328125 0.05511474609375 0 786432 $$$$
+$$$ v $$$
+$$$$ torch.Size([1, 512, 12, 128]) 0.00014972686767578125 -4.762411117553711e-05 422 786010 $$$$
+$$$ is_init $$$
+$$$$ <class 'bool'> $$$$
+-------------------------
+flow_pred: torch.Size([1, 3, 16, 60, 104])
+=========================
+##### convert time: 0.00021600723266601562 #####
+pred_x0: torch.Size([1, 3, 16, 60, 104])
+#########################
+	 Transformer denoising step 3/4 completed in 0.31s
+	   ➕ Add noise for next step completed in 0.00s
+	 timestep shape: torch.Size([1, 3]), value: tensor([[727.2728, 727.2728, 727.2728]], device='cuda:0')
+### wan_wrapper.py ###
+#### forward ####
+##### using kv cache #####
+##### model time: 0.28949427604675293 #####
+========= shapes =========
+noisy_image_or_video: torch.Size([1, 3, 16, 60, 104])
+noisy_image_or_video permute: torch.Size([1, 16, 3, 60, 104])
+t input_timestep: torch.Size([1, 3])
+context prompt_embeds: torch.Size([1, 512, 4096])
+seq_len: 32760
+kv_cache: 30
+kv_cache_dtype: <class 'dict'>
+@@@ k @@@
+@@@@ torch.Size([1, 32760, 12, 128]) -0.0167083740234375 -0.0020503997802734375 11 50319349 @@@@
+@@@ v @@@
+@@@@ torch.Size([1, 32760, 12, 128]) 0.01084136962890625 0.005767822265625 1 50319359 @@@@
+@@@ global_end_index @@@
+@@@@ torch.Size([1]) @@@@
+@@@ local_end_index @@@
+@@@@ torch.Size([1]) @@@@
+<class 'list'>
+30
+<class 'dict'>
+$$$ k $$$
+$$$$ torch.Size([1, 512, 12, 128]) 0.0302276611328125 0.05511474609375 0 786432 $$$$
+$$$ v $$$
+$$$$ torch.Size([1, 512, 12, 128]) 0.00014972686767578125 -4.762411117553711e-05 422 786010 $$$$
+$$$ is_init $$$
+$$$$ <class 'bool'> $$$$
+-------------------------
+flow_pred: torch.Size([1, 3, 16, 60, 104])
+=========================
+##### convert time: 0.00020623207092285156 #####
+pred_x0: torch.Size([1, 3, 16, 60, 104])
+#########################
+	 Transformer final denoising step 4/4 completed in 0.31s
+⚡ Block 7 denoising completed in 1.29s
+KV cache update for next block completed in 0.00s
+denoised_pred shape: torch.Size([1, 3, 16, 60, 104]), dtype: torch.float16
+decoding args: args.trt False, current_use_taehv False, vae_cache is None False
+🎨 Decoding block 7 to pixels...
+Length of feat_cache:  32
+🎨 Block 7 VAE decoding completed in 0.19s
+pixels shape after possible cropping: torch.Size([1, 12, 3, 480, 832]), block_frames: 12
+📡 Queueing 12 frames from block 7 for sending...
+	 Queueing frame 1/12 of block 7, shape: torch.Size([3, 480, 832]), dtype: torch.float32
+	 Queueing frame 2/12 of block 7, shape: torch.Size([3, 480, 832]), dtype: torch.float32
+	 Queueing frame 3/12 of block 7, shape: torch.Size([3, 480, 832]), dtype: torch.float32
+	 Queueing frame 4/12 of block 7, shape: torch.Size([3, 480, 832]), dtype: torch.float32
+	 Queueing frame 5/12 of block 7, shape: torch.Size([3, 480, 832]), dtype: torch.float32
+	 Queueing frame 6/12 of block 7, shape: torch.Size([3, 480, 832]), dtype: torch.float32
+	 Queueing frame 7/12 of block 7, shape: torch.Size([3, 480, 832]), dtype: torch.float32
+	 Queueing frame 8/12 of block 7, shape: torch.Size([3, 480, 832]), dtype: torch.float32
+	 Queueing frame 9/12 of block 7, shape: torch.Size([3, 480, 832]), dtype: torch.float32
+	 Queueing frame 10/12 of block 7, shape: torch.Size([3, 480, 832]), dtype: torch.float32
+	 Queueing frame 11/12 of block 7, shape: torch.Size([3, 480, 832]), dtype: torch.float32
+	 Queueing frame 12/12 of block 7, shape: torch.Size([3, 480, 832]), dtype: torch.float32
+✅ Block 7 completed in 1.87s (12 frames queued in 0.385s)
+🎉 Generation completed in 12.95s! 81 frames queued for sending
+⏳ Waiting for all frames to be sent...
+✅ All frames sent successfully!
+Video saved to ./videos/A stylish woman walk_1922138947_5665df7398.mp4
+📡 Frame sender thread stopped

@@ -267,6 +267,25 @@ class WanDiffusionWrapper(torch.nn.Module):
             print(f"context prompt_embeds: {prompt_embeds.shape}")
             print(f"seq_len: {self.seq_len}")
             print(f"kv_cache: {len(kv_cache)}")
+            print(f"kv_cache_dtype: {type(kv_cache[0])}")
+            for kv in kv_cache[:1]:
+                for k, v in kv.items():
+                    print(f"@@@ {k} @@@")
+                    try:
+                        print(f"@@@@ {v.shape} {v.mean()} {v.median()} {(v == 0).sum()} {(v != 0).sum()} @@@@")
+                    except Exception as e:
+                        print(f"@@@@ {v.shape} @@@@")
+            print(type(crossattn_cache))
+            print(len(crossattn_cache))
+            print(type(crossattn_cache[0]))
+            for crossattn in crossattn_cache[:1]:
+                for k, v in crossattn.items():
+                    print(f"$$$ {k} $$$")
+                    try:
+                        print(f"$$$$ {v.shape} {v.mean()} {v.median()} {(v == 0).sum()} {(v != 0).sum()} $$$$")
+                    except Exception as e:
+                        print(f"$$$$ {type(v)} $$$$")
+            
             print("-------------------------")
             print(f"flow_pred: {flow_pred.shape}")
             print("=========================")
