@@ -19,6 +19,8 @@ from utils.misc import set_seed
 
 from demo_utils.memory import gpu, get_cuda_free_memory_gb, DynamicSwapInstaller
 
+import time
+
 parser = argparse.ArgumentParser()
 parser.add_argument("--config_path", type=str, help="Path to the config file")
 parser.add_argument("--checkpoint_path", type=str, help="Path to the checkpoint folder")
@@ -122,6 +124,8 @@ def encode(self, videos: torch.Tensor) -> torch.Tensor:
 
 for i, batch_data in tqdm(enumerate(dataloader), disable=(local_rank != 0)):
     idx = batch_data['idx'].item()
+    print(i, idx, batch_data)
+
 
     # For DataLoader batch_size=1, the batch_data is already a single item, but in a batch container
     # Unpack the batch data for convenience
@@ -163,6 +167,7 @@ for i, batch_data in tqdm(enumerate(dataloader), disable=(local_rank != 0)):
         )
 
     # Generate 81 frames
+    start = time.time()
     video, latents = pipeline.inference(
         noise=sampled_noise,
         text_prompts=prompts,
@@ -180,6 +185,9 @@ for i, batch_data in tqdm(enumerate(dataloader), disable=(local_rank != 0)):
     # Clear VAE cache
     pipeline.vae.model.clear_cache()
 
+    end = time.time()
+    print("[inference] =============", end-start, "===========")
+
     # Save the video if the current prompt is not a dummy prompt
     if idx < num_prompts:
         model = "regular" if not args.use_ema else "ema"
@@ -190,3 +198,7 @@ for i, batch_data in tqdm(enumerate(dataloader), disable=(local_rank != 0)):
             else:
                 output_path = os.path.join(args.output_folder, f'{prompt[:100]}-{seed_idx}.mp4')
             write_video(output_path, video[seed_idx], fps=16)
+
+    if i == 10:
+        break
+

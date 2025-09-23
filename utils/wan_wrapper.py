@@ -240,14 +240,14 @@ class WanDiffusionWrapper(torch.nn.Module):
             input_timestep = timestep
 
         # TODO: see if this piece of code is touched from demo.py
-        print("### wan_wrapper.py ###")
-        print("#### forward ####")
+        # print("### wan_wrapper.py ###")
+        # print("#### forward ####")
         import time
 
         logits = None
         # X0 prediction
         if kv_cache is not None:
-            print("##### using kv cache #####")
+            # print("##### using kv cache #####")
             model_start = time.time()
             flow_pred = self.model(
                 noisy_image_or_video.permute(0, 2, 1, 3, 4),
@@ -259,38 +259,38 @@ class WanDiffusionWrapper(torch.nn.Module):
                 cache_start=cache_start
             ).permute(0, 2, 1, 3, 4)
             model_end = time.time()
-            print(f"##### model time: {model_end - model_start} #####")
-            print("========= shapes =========")
-            print(f"noisy_image_or_video: {noisy_image_or_video.shape}")
-            print(f"noisy_image_or_video permute: {noisy_image_or_video.permute(0, 2, 1, 3, 4).shape}")
-            print(f"t input_timestep: {input_timestep.shape}")
-            print(f"context prompt_embeds: {prompt_embeds.shape}")
-            print(f"seq_len: {self.seq_len}")
-            print(f"kv_cache: {len(kv_cache)}")
-            print(f"kv_cache_dtype: {type(kv_cache[0])}")
-            print(f"cache_start: {cache_start}")
-            print(f"current_start: {current_start}")
-            for kv in kv_cache[:1]:
-                for k, v in kv.items():
-                    print(f"@@@ {k} @@@")
-                    try:
-                        print(f"@@@@ {v.shape} {v.mean()} {v.median()} {(v == 0).sum()} {(v != 0).sum()} @@@@")
-                    except Exception as e:
-                        print(f"@@@@ {v.shape} {v.item()} @@@@")
-            print(type(crossattn_cache))
-            print(len(crossattn_cache))
-            print(type(crossattn_cache[0]))
-            for crossattn in crossattn_cache[:1]:
-                for k, v in crossattn.items():
-                    print(f"$$$ {k} $$$")
-                    try:
-                        print(f"$$$$ {v.shape} {v.mean()} {v.median()} {(v == 0).sum()} {(v != 0).sum()} $$$$")
-                    except Exception as e:
-                        print(f"$$$$ {type(v)} $$$$")
+            # print(f"##### model time: {model_end - model_start} #####")
+            # print("========= shapes =========")
+            # print(f"noisy_image_or_video: {noisy_image_or_video.shape}")
+            # print(f"noisy_image_or_video permute: {noisy_image_or_video.permute(0, 2, 1, 3, 4).shape}")
+            # print(f"t input_timestep: {input_timestep.shape}")
+            # print(f"context prompt_embeds: {prompt_embeds.shape}")
+            # print(f"seq_len: {self.seq_len}")
+            # print(f"kv_cache: {len(kv_cache)}")
+            # print(f"kv_cache_dtype: {type(kv_cache[0])}")
+            # print(f"cache_start: {cache_start}")
+            # print(f"current_start: {current_start}")
+            # for kv in kv_cache[:1]:
+            #     for k, v in kv.items():
+            #         print(f"@@@ {k} @@@")
+            #         try:
+            #             print(f"@@@@ {v.shape} {v.mean()} {v.median()} {(v == 0).sum()} {(v != 0).sum()} @@@@")
+            #         except Exception as e:
+            #             print(f"@@@@ {v.shape} {v.item()} @@@@")
+            # print(type(crossattn_cache))
+            # print(len(crossattn_cache))
+            # print(type(crossattn_cache[0]))
+            # for crossattn in crossattn_cache[:1]:
+            #     for k, v in crossattn.items():
+            #         print(f"$$$ {k} $$$")
+            #         try:
+            #             print(f"$$$$ {v.shape} {v.mean()} {v.median()} {(v == 0).sum()} {(v != 0).sum()} $$$$")
+            #         except Exception as e:
+            #             print(f"$$$$ {type(v)} $$$$")
             
-            print("-------------------------")
-            print(f"flow_pred: {flow_pred.shape}")
-            print("=========================")
+            # print("-------------------------")
+            # print(f"flow_pred: {flow_pred.shape}")
+            # print("=========================")
 
         else:
             if clean_x is not None:
@@ -329,9 +329,9 @@ class WanDiffusionWrapper(torch.nn.Module):
             timestep=timestep.flatten(0, 1)
         ).unflatten(0, flow_pred.shape[:2])
         convert_end = time.time()
-        print(f"##### convert time: {convert_end - convert_start} #####")
-        print(f"pred_x0: {pred_x0.shape}")
-        print("#########################")
+        # print(f"##### convert time: {convert_end - convert_start} #####")
+        # print(f"pred_x0: {pred_x0.shape}")
+        # print("#########################")
 
         if logits is not None:
             return flow_pred, pred_x0, logits

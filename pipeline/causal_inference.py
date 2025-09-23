@@ -50,9 +50,10 @@ class CausalInferencePipeline(torch.nn.Module):
         text_prompts: List[str],
         initial_latent: Optional[torch.Tensor] = None,
         return_latents: bool = False,
-        profile: bool = False,
+        profile: bool = True,
         low_memory: bool = False,
     ) -> torch.Tensor:
+        print("wulawula! using causal_inference pipeline!")
         """
         Perform inference on the given noise and text prompts.
         Inputs:
@@ -253,6 +254,7 @@ class CausalInferencePipeline(torch.nn.Module):
 
         # Step 4: Decode the output
         video = self.vae.decode_to_pixel(output, use_cache=False)
+        print(video.shape)
         video = (video * 0.5 + 0.5).clamp(0, 1)
 
         if profile:
