@@ -344,6 +344,23 @@ def generate_video_stream(prompt, seed, enable_torch_compile=False, enable_fp8=F
 
         emit_progress('Generating frames... (frontend handles timing)', 15)
 
+        profile = True
+        if profile:
+            _start = torch.cuda.Event(enable_timing=True)
+            _end = torch.cuda.Event(enable_timing=True)
+            denoising_start = torch.cuda.Event(enable_timing=True)
+            denoising_end = torch.cuda.Event(enable_timing=True)
+            block_start = torch.cuda.Event(enable_timing=True)
+            block_end = torch.cuda.Event(enable_timing=True)
+            transformer_start = torch.cuda.Event(enable_timing=True)
+            transformer_end = torch.cuda.Event(enable_timing=True)
+            decoding_start = torch.cuda.Event(enable_timing=True)
+            decoding_end = torch.cuda.Event(enable_timing=True)
+
+
+        if profile:
+            _start.record()
+
         for idx, current_num_frames in enumerate(all_num_frames):
             
             print(f"In loop: idx {idx}, current_num_frames {current_num_frames}, current_start_frame {current_start_frame}")
@@ -362,16 +379,15 @@ def generate_video_stream(prompt, seed, enable_torch_compile=False, enable_fp8=F
                 emit_progress(f'Processing block {idx+1}/{len(all_num_frames)}...', progress)
                 print(f"🔄 Processing block {idx+1}/{len(all_num_frames)}")
 
-            block_start_time = time.time()
-
             noisy_input = noise[:, current_start_frame - num_input_frames : current_start_frame + current_num_frames - num_input_frames]
-            print(f"noisy_input shape: {noisy_input.shape}, sharding: {current_start_frame - num_input_frames} to {current_start_frame + current_num_frames - num_input_frames}")
-            print(f"\t current_start_frame: {current_start_frame}, num_input_frames: {num_input_frames}, current_num_frames: {current_num_frames}")
+            # print(f"noisy_input shape: {noisy_input.shape}, sharding: {current_start_frame - num_input_frames} to {current_start_frame + current_num_frames - num_input_frames}")
+            # print(f"\t current_start_frame: {current_start_frame}, num_input_frames: {num_input_frames}, current_num_frames: {current_num_frames}")            
 
-            # Denoising loop
-            denoising_start = time.time()
+            # print(f"pipeline denoising steps: {pipeline.denoising_step_list}")
 
-            print(f"pipeline denoising steps: {pipeline.denoising_step_list}")
+            if profile:
+                block_start.record()
+                denoising_start.record()
 
             for index, current_timestep in enumerate(pipeline.denoising_step_list):
                 if not generation_active or stop_event.is_set():
@@ -382,7 +398,10 @@ def generate_video_stream(prompt, seed, enable_torch_compile=False, enable_fp8=F
                 print(f"\t timestep shape: {timestep.shape}, value: {timestep}")
 
                 if index < len(pipeline.denoising_step_list) - 1:
-                    transformer_start = time.time()
+
+                    if profile:
+                        transformer_start.record()
+                    
                     _, denoised_pred = transformer(
                         noisy_image_or_video=noisy_input,
                         conditional_dict=conditional_dict,
@@ -391,21 +410,27 @@ def generate_video_stream(prompt, seed, enable_torch_compile=False, enable_fp8=F
                         crossattn_cache=pipeline.crossattn_cache,
                         current_start=current_start_frame * pipeline.frame_seq_length
                     )
-                    transformer_time = time.time() - transformer_start
+
+                    if profile:
+                        transformer_end.record()
+                        torch.cuda.synchronize()
+                        transformer_time = transformer_start.elapsed_time(transformer_end)
+
                     print(f"\t Transformer denoising step {index+1}/{len(pipeline.denoising_step_list)} completed in {transformer_time:.2f}s")
                     
                     next_timestep = pipeline.denoising_step_list[index + 1]
                     
-                    add_noise_start = time.time()
                     noisy_input = pipeline.scheduler.add_noise(
                         denoised_pred.flatten(0, 1),
                         torch.randn_like(denoised_pred.flatten(0, 1)),
                         next_timestep * torch.ones([1 * current_num_frames], device=noise.device, dtype=torch.long)
                     ).unflatten(0, denoised_pred.shape[:2])
-                    add_noise_time = time.time() - add_noise_start
-                    print(f"\t   ➕ Add noise for next step completed in {add_noise_time:.2f}s")
+
                 else:
-                    transformer_start = time.time()
+                    
+                    if profile:
+                        transformer_start.record()
+
                     _, denoised_pred = transformer(
                         noisy_image_or_video=noisy_input,
                         conditional_dict=conditional_dict,
@@ -414,21 +439,33 @@ def generate_video_stream(prompt, seed, enable_torch_compile=False, enable_fp8=F
                         crossattn_cache=pipeline.crossattn_cache,
                         current_start=current_start_frame * pipeline.frame_seq_length
                     )
-                    transformer_time = time.time() - transformer_start
+
+                    if profile:
+                        transformer_end.record()
+                        torch.cuda.synchronize()
+                        transformer_time = transformer_start.elapsed_time(transformer_end)
+
                     print(f"\t Transformer final denoising step {index+1}/{len(pipeline.denoising_step_list)} completed in {transformer_time:.2f}s")
 
             if not generation_active or stop_event.is_set():
                 break
 
-            denoising_time = time.time() - denoising_start
+            if profile:
+                denoising_end.record()
+                torch.cuda.Event()
+                denoising_time = denoising_start.elapsed_time(denoising_end)
+
             print(f"⚡ Block {idx+1} denoising completed in {denoising_time:.2f}s")
 
             # Record output
             # all_latents[:, current_start_frame:current_start_frame + current_num_frames] = denoised_pred
 
-            kv_update_start = time.time()
             # Update KV cache for next block
             if idx != len(all_num_frames) - 1:
+
+                if profile:
+                    transformer_start.record()
+
                 transformer(
                     noisy_image_or_video=denoised_pred,
                     conditional_dict=conditional_dict,
@@ -437,15 +474,23 @@ def generate_video_stream(prompt, seed, enable_torch_compile=False, enable_fp8=F
                     crossattn_cache=pipeline.crossattn_cache,
                     current_start=current_start_frame * pipeline.frame_seq_length,
                 )
-            kv_update_time = time.time() - kv_update_start
-            print(f"KV cache update for next block completed in {kv_update_time:.2f}s")
-            print(f"denoised_pred shape: {denoised_pred.shape}, dtype: {denoised_pred.dtype}")
+
+                if profile:
+                    transformer_end.record()
+                    torch.cuda.synchronize()
+                    kv_update_time = transformer_start.elapsed_time(transformer_end)
+
+                print(f"KV cache update for next block completed in {kv_update_time:.2f}s")
+                print(f"denoised_pred shape: {denoised_pred.shape}, dtype: {denoised_pred.dtype}")
 
             print(f"decoding args: args.trt {args.trt}, current_use_taehv {current_use_taehv}, vae_cache is None {vae_cache is None if not args.trt else 'N/A'}")
 
             # Decode to pixels and send frames immediately
             print(f"🎨 Decoding block {idx+1} to pixels...")
-            decode_start = time.time()
+            
+            if profile:
+                decoding_start.record()
+
             if args.trt:
                 all_current_pixels = []
                 for i in range(denoised_pred.shape[1]):
@@ -479,8 +524,11 @@ def generate_video_stream(prompt, seed, enable_torch_compile=False, enable_fp8=F
                     if idx == 0:
                         pixels = pixels[:, 3:, :, :, :]  # Skip first 3 frames of first block
 
-            decode_time = time.time() - decode_start
-            print(f"🎨 Block {idx+1} VAE decoding completed in {decode_time:.2f}s")
+            if profile:
+                decoding_end.record()
+                torch.cuda.synchronize()
+                decoding_time = decoding_start.elapsed_time(decoding_end)
+            print(f"🎨 Block {idx+1} VAE decoding completed in {decoding_time:.2f}s")
 
             # Queue frames for non-blocking sending
             block_frames = pixels.shape[1]
@@ -500,14 +548,27 @@ def generate_video_stream(prompt, seed, enable_torch_compile=False, enable_fp8=F
                 frame_send_queue.put((frame_tensor, total_frames_sent, idx, job_id))
                 total_frames_sent += 1
 
+            if profile:
+                block_end.record()
+                torch.cuda.synchronize()
+                block_time = block_start.elapsed_time(block_end)
+            else:
+                block_time = "not profiling"
+
             queue_time = time.time() - queue_start
-            block_time = time.time() - block_start_time
             print(f"✅ Block {idx+1} completed in {block_time:.2f}s ({block_frames} frames queued in {queue_time:.3f}s)")
 
             current_start_frame += current_num_frames
 
         generation_time = time.time() - generation_start_time
         print(f"🎉 Generation completed in {generation_time:.2f}s! {total_frames_sent} frames queued for sending")
+
+        if profile:
+            _end.record()
+            torch.cuda.synchronize()
+            _time = _start.elapsed_time(_end)
+            print(f"🎉 Generation completed in {_time:.2f}s! (recorded with cuda event!)")
+
 
         # Wait for all frames to be sent before completing
         emit_progress('Waiting for all frames to be sent...', 97)
