@@ -395,7 +395,7 @@ def generate_video_stream(prompt, seed, enable_torch_compile=False, enable_fp8=F
 
                 timestep = torch.ones([1, current_num_frames], device=noise.device,
                                       dtype=torch.int64) * current_timestep
-                print(f"\t timestep shape: {timestep.shape}, value: {timestep}")
+                # print(f"\t timestep shape: {timestep.shape}, value: {timestep}")
 
                 if index < len(pipeline.denoising_step_list) - 1:
 
@@ -416,7 +416,7 @@ def generate_video_stream(prompt, seed, enable_torch_compile=False, enable_fp8=F
                         torch.cuda.synchronize()
                         transformer_time = transformer_start.elapsed_time(transformer_end)
 
-                    print(f"\t Transformer denoising step {index+1}/{len(pipeline.denoising_step_list)} completed in {transformer_time:.2f}s")
+                    print(f"\t Transformer denoising step {index+1}/{len(pipeline.denoising_step_list)} completed in {transformer_time:.2f} ms")
                     
                     next_timestep = pipeline.denoising_step_list[index + 1]
                     
@@ -445,7 +445,7 @@ def generate_video_stream(prompt, seed, enable_torch_compile=False, enable_fp8=F
                         torch.cuda.synchronize()
                         transformer_time = transformer_start.elapsed_time(transformer_end)
 
-                    print(f"\t Transformer final denoising step {index+1}/{len(pipeline.denoising_step_list)} completed in {transformer_time:.2f}s")
+                    print(f"\t Transformer final denoising step {index+1}/{len(pipeline.denoising_step_list)} completed in {transformer_time:.2f} ms")
 
             if not generation_active or stop_event.is_set():
                 break
@@ -455,7 +455,7 @@ def generate_video_stream(prompt, seed, enable_torch_compile=False, enable_fp8=F
                 torch.cuda.Event()
                 denoising_time = denoising_start.elapsed_time(denoising_end)
 
-            print(f"⚡ Block {idx+1} denoising completed in {denoising_time:.2f}s")
+            print(f"⚡ Block {idx+1} denoising completed in {denoising_time:.2f} ms")
 
             # Record output
             # all_latents[:, current_start_frame:current_start_frame + current_num_frames] = denoised_pred
@@ -480,7 +480,7 @@ def generate_video_stream(prompt, seed, enable_torch_compile=False, enable_fp8=F
                     torch.cuda.synchronize()
                     kv_update_time = transformer_start.elapsed_time(transformer_end)
 
-                print(f"KV cache update for next block completed in {kv_update_time:.2f}s")
+                print(f"KV cache update for next block completed in {kv_update_time:.2f} .s")
                 print(f"denoised_pred shape: {denoised_pred.shape}, dtype: {denoised_pred.dtype}")
 
             print(f"decoding args: args.trt {args.trt}, current_use_taehv {current_use_taehv}, vae_cache is None {vae_cache is None if not args.trt else 'N/A'}")
@@ -520,7 +520,17 @@ def generate_video_stream(prompt, seed, enable_torch_compile=False, enable_fp8=F
                         pixels = pixels[:, 12:, :, :, :]
 
                 else:
+                    """
+                    rand pixels to see if vae is causing "cold start"
+                    pixels = torch.rand(1, 12, 3, 480, 832)
+                    """
                     pixels, vae_cache = current_vae_decoder(denoised_pred.half(), *vae_cache)
+                    
+                    # print(f"denoised_pred shape: {denoised_pred.shape}")
+                    # print(f"pixels shape: {pixels.shape}")
+                    # print(f"vae_cache length: {len(vae_cache)}")
+                    # for vae_c in vae_cache:
+                    #     print(f"\t vae_c shape: {vae_c.shape}")
                     if idx == 0:
                         pixels = pixels[:, 3:, :, :, :]  # Skip first 3 frames of first block
 
@@ -528,7 +538,7 @@ def generate_video_stream(prompt, seed, enable_torch_compile=False, enable_fp8=F
                 decoding_end.record()
                 torch.cuda.synchronize()
                 decoding_time = decoding_start.elapsed_time(decoding_end)
-            print(f"🎨 Block {idx+1} VAE decoding completed in {decoding_time:.2f}s")
+            print(f"🎨 Block {idx+1} VAE decoding completed in {decoding_time:.2f} ms")
 
             # Queue frames for non-blocking sending
             block_frames = pixels.shape[1]
@@ -542,7 +552,7 @@ def generate_video_stream(prompt, seed, enable_torch_compile=False, enable_fp8=F
                     break
 
                 frame_tensor = pixels[0, frame_idx].cpu()
-                print(f"\t Queueing frame {frame_idx+1}/{block_frames} of block {idx+1}, shape: {frame_tensor.shape}, dtype: {frame_tensor.dtype}")
+                # print(f"\t Queueing frame {frame_idx+1}/{block_frames} of block {idx+1}, shape: {frame_tensor.shape}, dtype: {frame_tensor.dtype}")
 
                 # Queue frame data in non-blocking way
                 frame_send_queue.put((frame_tensor, total_frames_sent, idx, job_id))
@@ -556,18 +566,18 @@ def generate_video_stream(prompt, seed, enable_torch_compile=False, enable_fp8=F
                 block_time = "not profiling"
 
             queue_time = time.time() - queue_start
-            print(f"✅ Block {idx+1} completed in {block_time:.2f}s ({block_frames} frames queued in {queue_time:.3f}s)")
+            print(f"✅ Block {idx+1} completed in {block_time:.2f} ms ({block_frames} frames queued in {queue_time:.3f} ms)")
 
             current_start_frame += current_num_frames
 
         generation_time = time.time() - generation_start_time
-        print(f"🎉 Generation completed in {generation_time:.2f}s! {total_frames_sent} frames queued for sending")
+        print(f"🎉 Generation completed in {generation_time:.2f} ms! {total_frames_sent} frames queued for sending")
 
         if profile:
             _end.record()
             torch.cuda.synchronize()
             _time = _start.elapsed_time(_end)
-            print(f"🎉 Generation completed in {_time:.2f}s! (recorded with cuda event!)")
+            print(f"🎉 Generation completed in {_time:.2f} ms! (recorded with cuda event!)")
 
 
         # Wait for all frames to be sent before completing

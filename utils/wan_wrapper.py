@@ -124,8 +124,10 @@ class WanDiffusionWrapper(torch.nn.Module):
         super().__init__()
 
         if is_causal:
+            print("is causal...")
             self.model = CausalWanModel.from_pretrained(
                 f"wan_models/{model_name}/", local_attn_size=local_attn_size, sink_size=sink_size)
+            print(self.model)
         else:
             self.model = WanModel.from_pretrained(f"wan_models/{model_name}/")
         self.model.eval()
@@ -242,13 +244,64 @@ class WanDiffusionWrapper(torch.nn.Module):
         # TODO: see if this piece of code is touched from demo.py
         # print("### wan_wrapper.py ###")
         # print("#### forward ####")
-        import time
+        # import time
+        model_start = torch.cuda.Event(enable_timing=True)
+        model_end = torch.cuda.Event(enable_timing=True)
+
+        cache_prep_start = torch.cuda.Event(enable_timing=True)
+        cache_prep_end = torch.cuda.Event(enable_timing=True)
 
         logits = None
         # X0 prediction
         if kv_cache is not None:
+
             # print("##### using kv cache #####")
-            model_start = time.time()
+            """
+            cache_prep_start.record()
+            # kv_view = kv_cache   # no copy if view
+            # # kv_view = kv_cache[..., cache_start:cache_start+self.seq_len]   # no copy if view
+            # xattn_view = crossattn_cache                                   # typically persistent
+
+            # if kv_view.device.type != "cuda":
+            #     print("kv not in cuda")
+            #     kv_view = kv_view.to(device="cuda", non_blocking=True)
+            # if xattn_view.device.type != "cuda":
+            #     print("xattn not in cuda")
+            #     xattn_view = xattn_view.to(device="cuda", non_blocking=True)
+
+            for kv in kv_cache:
+                for k, v in kv.items():
+                    try:
+                        mean = v.mean()
+                        median = v.median()
+                        # print(f"@@@@ {v.shape} {v.mean()} {v.median()} {(v == 0).sum()} {(v != 0).sum()} @@@@")
+                    except Exception as e:
+                        pass
+                        # print(f"@@@@ {v.shape} {v.item()} @@@@")
+            # print(type(crossattn_cache))
+            # print(len(crossattn_cache))
+            # print(type(crossattn_cache[0]))
+            for crossattn in crossattn_cache:
+                for k, v in crossattn.items():
+                    # print(f"$$$ {k} $$$")
+                    try:
+                        mean = v.mean()
+                        median = v.median()
+                        # print(f"$$$$ {v.shape} {v.mean()} {v.median()} {(v == 0).sum()} {(v != 0).sum()} $$$$")
+                    except Exception as e:
+                        pass
+                        # print(f"$$$$ {type(v)} $$$$")
+            
+            # kv_view = kv_view.contiguous()
+            # xattn_view = xattn_view.contiguous()
+            
+            cache_prep_end.record()
+            torch.cuda.synchronize()
+            print(f"##### cache time: ""{cache_prep_start.elapsed_time(cache_prep_end)} #####")
+            """
+
+            model_start.record()
+
             flow_pred = self.model(
                 noisy_image_or_video.permute(0, 2, 1, 3, 4),
                 t=input_timestep, context=prompt_embeds,
@@ -258,8 +311,10 @@ class WanDiffusionWrapper(torch.nn.Module):
                 current_start=current_start,
                 cache_start=cache_start
             ).permute(0, 2, 1, 3, 4)
-            model_end = time.time()
-            # print(f"##### model time: {model_end - model_start} #####")
+            
+            model_end.record()
+            torch.cuda.synchronize()
+            print(f"##### model time: {model_start.elapsed_time(model_end)} #####")
             # print("========= shapes =========")
             # print(f"noisy_image_or_video: {noisy_image_or_video.shape}")
             # print(f"noisy_image_or_video permute: {noisy_image_or_video.permute(0, 2, 1, 3, 4).shape}")
@@ -270,23 +325,6 @@ class WanDiffusionWrapper(torch.nn.Module):
             # print(f"kv_cache_dtype: {type(kv_cache[0])}")
             # print(f"cache_start: {cache_start}")
             # print(f"current_start: {current_start}")
-            # for kv in kv_cache[:1]:
-            #     for k, v in kv.items():
-            #         print(f"@@@ {k} @@@")
-            #         try:
-            #             print(f"@@@@ {v.shape} {v.mean()} {v.median()} {(v == 0).sum()} {(v != 0).sum()} @@@@")
-            #         except Exception as e:
-            #             print(f"@@@@ {v.shape} {v.item()} @@@@")
-            # print(type(crossattn_cache))
-            # print(len(crossattn_cache))
-            # print(type(crossattn_cache[0]))
-            # for crossattn in crossattn_cache[:1]:
-            #     for k, v in crossattn.items():
-            #         print(f"$$$ {k} $$$")
-            #         try:
-            #             print(f"$$$$ {v.shape} {v.mean()} {v.median()} {(v == 0).sum()} {(v != 0).sum()} $$$$")
-            #         except Exception as e:
-            #             print(f"$$$$ {type(v)} $$$$")
             
             # print("-------------------------")
             # print(f"flow_pred: {flow_pred.shape}")
@@ -322,13 +360,13 @@ class WanDiffusionWrapper(torch.nn.Module):
                         seq_len=self.seq_len
                     ).permute(0, 2, 1, 3, 4)
 
-        convert_start = time.time()
+        # convert_start = time.time()
         pred_x0 = self._convert_flow_pred_to_x0(
             flow_pred=flow_pred.flatten(0, 1),
             xt=noisy_image_or_video.flatten(0, 1),
             timestep=timestep.flatten(0, 1)
         ).unflatten(0, flow_pred.shape[:2])
-        convert_end = time.time()
+        # convert_end = time.time()
         # print(f"##### convert time: {convert_end - convert_start} #####")
         # print(f"pred_x0: {pred_x0.shape}")
         # print("#########################")

@@ -1,0 +1,179 @@
+Free VRAM 78.676513671875 GB
+KV inference with 3 frames per block
+Number of prompts: 1003
+0 0 {'prompts': ['A stylish woman strolls down a bustling Tokyo street, the warm glow of neon lights and animated city signs casting vibrant reflections. She wears a sleek black leather jacket paired with a flowing red dress and black boots, her black purse slung over her shoulder. Sunglasses perched on her nose and a bold red lipstick add to her confident, casual demeanor. The street is damp and reflective, creating a mirror-like effect that enhances the colorful lights and shadows. Pedestrians move about, adding to the lively atmosphere. The scene is captured in a dynamic medium shot with the woman walking slightly to one side, highlighting her graceful strides.'], 'idx': tensor([0])}
+wulawula! using causal_inference pipeline!
+torch.Size([1, 81, 3, 480, 832])
+Profiling results:
+  - Initialization/caching time: 10.03 ms (0.17%)
+  - Diffusion generation time: 3934.15 ms (66.68%)
+    - Block 0 generation time: 519.51 ms (13.21% of diffusion)
+    - Block 1 generation time: 420.68 ms (10.69% of diffusion)
+    - Block 2 generation time: 479.71 ms (12.19% of diffusion)
+    - Block 3 generation time: 539.33 ms (13.71% of diffusion)
+    - Block 4 generation time: 598.06 ms (15.20% of diffusion)
+    - Block 5 generation time: 659.59 ms (16.77% of diffusion)
+    - Block 6 generation time: 717.03 ms (18.23% of diffusion)
+  - VAE decoding time: 1955.67 ms (33.15%)
+  - Total time: 5899.85 ms
+[inference] ============= 6.491648197174072 ===========
+1 1 {'prompts': ['A stunning mid-afternoon landscape photograph with a low camera angle, showcasing several giant wooly mammoths treading through a snowy meadow. Their long, wooly fur gently billows in the brisk wind as they move, creating a sense of natural movement. Snow-covered trees and dramatic snow-capped mountains loom in the distance, adding to the majestic setting. Wispy clouds and a high sun cast a warm glow over the scene, enhancing the serene and awe-inspiring atmosphere. The depth of field brings out the detailed textures of the mammoths and the snowy environment, capturing every nuance of these prehistoric giants in breathtaking clarity.'], 'idx': tensor([1])}
+wulawula! using causal_inference pipeline!
+torch.Size([1, 81, 3, 480, 832])
+Profiling results:
+  - Initialization/caching time: 1.71 ms (0.03%)
+  - Diffusion generation time: 3786.91 ms (67.12%)
+    - Block 0 generation time: 375.69 ms (9.92% of diffusion)
+    - Block 1 generation time: 420.42 ms (11.10% of diffusion)
+    - Block 2 generation time: 478.86 ms (12.65% of diffusion)
+    - Block 3 generation time: 538.44 ms (14.22% of diffusion)
+    - Block 4 generation time: 598.32 ms (15.80% of diffusion)
+    - Block 5 generation time: 658.82 ms (17.40% of diffusion)
+    - Block 6 generation time: 716.11 ms (18.91% of diffusion)
+  - VAE decoding time: 1853.28 ms (32.85%)
+  - Total time: 5641.91 ms
+[inference] ============= 6.194963693618774 ===========
+2 2 {'prompts': ["A movie trailer in a classic cinematic style, featuring the adventurous journey of a 30-year-old space man wearing a vibrant red wool knitted motorcycle helmet. The scene unfolds against a vast blue sky and a desolate salt desert landscape. Shot on 35mm film, the trailer showcases vivid and rich colors, capturing the hero as he navigates through the harsh terrain with determination. His helmet glints under the sun, adding to the dramatic effect. The background is a mix of sweeping desert vistas and distant horizons, with the occasional shimmer of light reflecting off the salt flats. A dynamic medium shot with a sweeping overhead angle, emphasizing the hero's resilience and the vastness of his adventure."], 'idx': tensor([2])}
+wulawula! using causal_inference pipeline!
+torch.Size([1, 81, 3, 480, 832])
+Profiling results:
+  - Initialization/caching time: 1.64 ms (0.03%)
+  - Diffusion generation time: 3774.71 ms (67.05%)
+    - Block 0 generation time: 376.24 ms (9.97% of diffusion)
+    - Block 1 generation time: 418.16 ms (11.08% of diffusion)
+    - Block 2 generation time: 477.89 ms (12.66% of diffusion)
+    - Block 3 generation time: 536.85 ms (14.22% of diffusion)
+    - Block 4 generation time: 595.11 ms (15.77% of diffusion)
+    - Block 5 generation time: 655.40 ms (17.36% of diffusion)
+    - Block 6 generation time: 714.82 ms (18.94% of diffusion)
+  - VAE decoding time: 1853.47 ms (32.92%)
+  - Total time: 5629.81 ms
+[inference] ============= 6.173845291137695 ===========
+3 3 {'prompts': ["A drone view of waves crashing against the rugged cliffs along Big Sur’s Garay Point beach. The crashing blue waters create white-tipped waves, while the golden light of the setting sun illuminates the rocky shore, casting long shadows. In the distance, a small island with a lighthouse stands tall, its beam piercing the twilight. Green shrubbery covers the cliff’s edge, and the steep drop from the road down to the beach is a dramatic feat, with the cliff’s edges jutting out over the sea. The camera angle provides a bird's-eye view, capturing the raw beauty of the coast and the rugged landscape of the Pacific Coast Highway. The scene is bathed in a warm, golden hue, highlighting the textures and details of the rocky terrain."], 'idx': tensor([3])}
+wulawula! using causal_inference pipeline!
+torch.Size([1, 81, 3, 480, 832])
+Profiling results:
+  - Initialization/caching time: 1.71 ms (0.03%)
+  - Diffusion generation time: 3787.22 ms (67.12%)
+    - Block 0 generation time: 379.50 ms (10.02% of diffusion)
+    - Block 1 generation time: 421.63 ms (11.13% of diffusion)
+    - Block 2 generation time: 478.20 ms (12.63% of diffusion)
+    - Block 3 generation time: 537.02 ms (14.18% of diffusion)
+    - Block 4 generation time: 597.51 ms (15.78% of diffusion)
+    - Block 5 generation time: 657.75 ms (17.37% of diffusion)
+    - Block 6 generation time: 715.34 ms (18.89% of diffusion)
+  - VAE decoding time: 1853.37 ms (32.85%)
+  - Total time: 5642.30 ms
+[inference] ============= 6.307554721832275 ===========
+4 4 {'prompts': ['A close-up 3D animated scene of a short, fluffy monster kneeling beside a melting red candle. The monster has large, wide eyes and an open mouth, gazing at the flame with a look of wonder and curiosity. Its soft, fluffy fur contrasts with the warm, dramatic lighting that highlights every detail of its gentle, innocent expression. The pose conveys a sense of playfulness and exploration, as if the creature is discovering the world for the first time. The background features a cozy, warmly lit room with subtle hints of a fireplace and soft furnishings, enhancing the overall atmosphere. The use of warm colors and dramatic lighting creates a captivating and inviting scene.'], 'idx': tensor([4])}
+wulawula! using causal_inference pipeline!
+torch.Size([1, 81, 3, 480, 832])
+Profiling results:
+  - Initialization/caching time: 1.94 ms (0.03%)
+  - Diffusion generation time: 3772.62 ms (67.01%)
+    - Block 0 generation time: 371.70 ms (9.85% of diffusion)
+    - Block 1 generation time: 418.23 ms (11.09% of diffusion)
+    - Block 2 generation time: 477.83 ms (12.67% of diffusion)
+    - Block 3 generation time: 537.54 ms (14.25% of diffusion)
+    - Block 4 generation time: 596.72 ms (15.82% of diffusion)
+    - Block 5 generation time: 656.16 ms (17.39% of diffusion)
+    - Block 6 generation time: 714.17 ms (18.93% of diffusion)
+  - VAE decoding time: 1855.36 ms (32.96%)
+  - Total time: 5629.92 ms
+[inference] ============= 6.206154108047485 ===========
+5 5 {'prompts': ['A beautifully detailed papercraft illustration of a vibrant coral reef teeming with colorful fish and sea creatures. The coral formations are intricately designed, with each polyp and branch meticulously crafted. Schools of tropical fish swim gracefully among the corals, their scales shimmering in hues of turquoise, orange, and purple. Sea turtles glide smoothly over the reef, while a school of clownfish dart playfully around an anemone. The background features a soft, pastel-colored ocean with gentle waves and a hint of sunlight breaking through. The entire scene is rendered with a lifelike and textured papercraft style, capturing the essence of a thriving underwater ecosystem. A close-up view from a slightly elevated angle.'], 'idx': tensor([5])}
+wulawula! using causal_inference pipeline!
+torch.Size([1, 81, 3, 480, 832])
+Profiling results:
+  - Initialization/caching time: 1.69 ms (0.03%)
+  - Diffusion generation time: 3778.68 ms (67.07%)
+    - Block 0 generation time: 371.54 ms (9.83% of diffusion)
+    - Block 1 generation time: 418.01 ms (11.06% of diffusion)
+    - Block 2 generation time: 479.34 ms (12.69% of diffusion)
+    - Block 3 generation time: 542.04 ms (14.34% of diffusion)
+    - Block 4 generation time: 596.31 ms (15.78% of diffusion)
+    - Block 5 generation time: 655.88 ms (17.36% of diffusion)
+    - Block 6 generation time: 715.31 ms (18.93% of diffusion)
+  - VAE decoding time: 1853.91 ms (32.90%)
+  - Total time: 5634.28 ms
+[inference] ============= 6.227510452270508 ===========
+6 6 {'prompts': ['A close-up shot of a Victoria crowned pigeon in a naturalistic wildlife photography style, showcasing its striking blue plumage and red chest. The bird’s crest is adorned with delicate, lacy feathers, and its eye is a striking red color, adding to its regal and majestic appearance. The pigeon’s head is tilted slightly to the side, giving it a regal gaze. The background is blurred, emphasizing the bird’s striking beauty against a soft, muted backdrop. The lighting highlights the bird’s feathers, creating a vibrant and lifelike image.'], 'idx': tensor([6])}
+wulawula! using causal_inference pipeline!
+torch.Size([1, 81, 3, 480, 832])
+Profiling results:
+  - Initialization/caching time: 1.76 ms (0.03%)
+  - Diffusion generation time: 3804.20 ms (67.20%)
+    - Block 0 generation time: 376.17 ms (9.89% of diffusion)
+    - Block 1 generation time: 419.23 ms (11.02% of diffusion)
+    - Block 2 generation time: 478.71 ms (12.58% of diffusion)
+    - Block 3 generation time: 540.00 ms (14.19% of diffusion)
+    - Block 4 generation time: 601.46 ms (15.81% of diffusion)
+    - Block 5 generation time: 660.61 ms (17.37% of diffusion)
+    - Block 6 generation time: 727.76 ms (19.13% of diffusion)
+  - VAE decoding time: 1854.95 ms (32.77%)
+  - Total time: 5660.91 ms
+[inference] ============= 6.219776630401611 ===========
+7 7 {'prompts': ['A photorealistic closeup video of two pirate ships battling each other as they sail inside a steaming cup of coffee. The ships are intricately detailed, with wooden planks, sails flapping in the breeze, and cannons aimed at each other. The crew members, wearing authentic pirate attire, brandish swords and pistols, their expressions fierce and determined. The coffee foam creates a frothy, turbulent sea, with ripples and waves realistically depicted. The background is a blurred, warm brown coffee surface, with steam rising gently. The camera angle is slightly elevated, capturing the intense action from above.'], 'idx': tensor([7])}
+wulawula! using causal_inference pipeline!
+torch.Size([1, 81, 3, 480, 832])
+Profiling results:
+  - Initialization/caching time: 1.78 ms (0.03%)
+  - Diffusion generation time: 3776.70 ms (67.05%)
+    - Block 0 generation time: 373.31 ms (9.88% of diffusion)
+    - Block 1 generation time: 417.82 ms (11.06% of diffusion)
+    - Block 2 generation time: 477.43 ms (12.64% of diffusion)
+    - Block 3 generation time: 536.34 ms (14.20% of diffusion)
+    - Block 4 generation time: 596.27 ms (15.79% of diffusion)
+    - Block 5 generation time: 656.90 ms (17.39% of diffusion)
+    - Block 6 generation time: 718.37 ms (19.02% of diffusion)
+  - VAE decoding time: 1854.02 ms (32.92%)
+  - Total time: 5632.51 ms
+[inference] ============= 6.109273433685303 ===========
+8 8 {'prompts': ['A vibrant anime illustration in a thick painting style featuring a young man in his 20s sitting on a fluffy white cloud in the sky, engrossed in reading a classic leather-bound book. He has short, messy black hair and expressive brown eyes, wearing a casual white t-shirt and blue jeans. His posture is relaxed yet attentive, with one leg crossed over the other. The background is a vivid sky with cotton-like clouds and a soft sunset glow, casting a warm orange hue. The scene has a dreamy and ethereal quality. A medium shot with a slightly downward angle.'], 'idx': tensor([8])}
+wulawula! using causal_inference pipeline!
+torch.Size([1, 81, 3, 480, 832])
+Profiling results:
+  - Initialization/caching time: 1.82 ms (0.03%)
+  - Diffusion generation time: 3784.01 ms (67.09%)
+    - Block 0 generation time: 375.24 ms (9.92% of diffusion)
+    - Block 1 generation time: 418.20 ms (11.05% of diffusion)
+    - Block 2 generation time: 478.20 ms (12.64% of diffusion)
+    - Block 3 generation time: 538.38 ms (14.23% of diffusion)
+    - Block 4 generation time: 598.51 ms (15.82% of diffusion)
+    - Block 5 generation time: 657.64 ms (17.38% of diffusion)
+    - Block 6 generation time: 717.58 ms (18.96% of diffusion)
+  - VAE decoding time: 1854.28 ms (32.88%)
+  - Total time: 5640.11 ms
+[inference] ============= 6.139338731765747 ===========
+9 9 {'prompts': ['A historical footage style photograph depicting a bustling gold rush town in California. The scene captures miners panning for gold in a stream, their faces weathered and determined. Behind them, makeshift wooden shacks and tents line the streets, with smoke rising from chimneys. A man in a dusty hat and tattered clothes stands near a sluice box, his hand on his hip, looking out towards the camera with a mix of hope and hardship. The background features rolling hills and dense forests, with a few oxen-drawn wagons in the distance. The photo has a sepia tone and a grainy texture, capturing the essence of the era. A medium shot with a slightly tilted angle.'], 'idx': tensor([9])}
+wulawula! using causal_inference pipeline!
+torch.Size([1, 81, 3, 480, 832])
+Profiling results:
+  - Initialization/caching time: 1.76 ms (0.03%)
+  - Diffusion generation time: 3770.88 ms (67.02%)
+    - Block 0 generation time: 371.71 ms (9.86% of diffusion)
+    - Block 1 generation time: 418.58 ms (11.10% of diffusion)
+    - Block 2 generation time: 477.41 ms (12.66% of diffusion)
+    - Block 3 generation time: 536.79 ms (14.24% of diffusion)
+    - Block 4 generation time: 596.32 ms (15.81% of diffusion)
+    - Block 5 generation time: 655.21 ms (17.38% of diffusion)
+    - Block 6 generation time: 714.58 ms (18.95% of diffusion)
+  - VAE decoding time: 1854.04 ms (32.95%)
+  - Total time: 5626.68 ms
+[inference] ============= 6.116960525512695 ===========
+10 10 {'prompts': ['A close-up view of a glass sphere containing a tranquil Zen garden. Inside, a small Eastern dwarf with weathered skin and a serene expression is raking the sand, meticulously creating intricate patterns with a bamboo rake. His movements are deliberate and meditative, enhancing the peaceful atmosphere of the scene. The background is blurred, revealing only hints of greenery and rocks, adding to the serene setting. The sphere itself is polished, reflecting the surroundings subtly. The camera angle captures the dwarf from a slightly elevated position, emphasizing his focused and contemplative pose.'], 'idx': tensor([10])}
+wulawula! using causal_inference pipeline!
+torch.Size([1, 81, 3, 480, 832])
+Profiling results:
+  - Initialization/caching time: 1.61 ms (0.03%)
+  - Diffusion generation time: 3787.22 ms (67.12%)
+    - Block 0 generation time: 376.71 ms (9.95% of diffusion)
+    - Block 1 generation time: 418.56 ms (11.05% of diffusion)
+    - Block 2 generation time: 478.34 ms (12.63% of diffusion)
+    - Block 3 generation time: 538.69 ms (14.22% of diffusion)
+    - Block 4 generation time: 598.14 ms (15.79% of diffusion)
+    - Block 5 generation time: 657.84 ms (17.37% of diffusion)
+    - Block 6 generation time: 718.71 ms (18.98% of diffusion)
+  - VAE decoding time: 1853.48 ms (32.85%)
+  - Total time: 5642.31 ms
+[inference] ============= 6.248838424682617 ===========

@@ -54,6 +54,7 @@ class CausalDiffusionInferencePipeline(torch.nn.Module):
         return_latents: bool = False,
         start_frame_index: Optional[int] = 0
     ) -> torch.Tensor:
+        print("wulawula! using causal_diffusion_inference pipeline!")
         """
         Perform inference on the given noise and text prompts.
         Inputs:
