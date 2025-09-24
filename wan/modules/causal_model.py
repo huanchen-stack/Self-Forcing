@@ -111,6 +111,7 @@ class CausalWanSelfAttention(nn.Module):
         if profile:
             _start = torch.cuda.Event(enable_timing=True)
             _end = torch.cuda.Event(enable_timing=True)
+            torch.cuda.synchronize()
             _start.record()
 
         # query, key, value function
@@ -126,6 +127,7 @@ class CausalWanSelfAttention(nn.Module):
             _end.record()
             torch.cuda.synchronize()
             print(f"\t\tqkv: {_start.elapsed_time(_end)} ms")
+            torch.cuda.synchronize()
             _start.record()
 
         if kv_cache is None:
@@ -219,6 +221,7 @@ class CausalWanSelfAttention(nn.Module):
                 _end.record()
                 torch.cuda.synchronize()
                 print(f"\t\trope: {_start.elapsed_time(_end)} ms")
+                torch.cuda.synchronize()
                 _start.record()
 
             kv_cache_size = kv_cache["k"].shape[1]
@@ -251,6 +254,7 @@ class CausalWanSelfAttention(nn.Module):
                 _end.record()
                 torch.cuda.synchronize()
                 print(f"\t\tkv cache update (if evict): {_start.elapsed_time(_end)} ms")
+                torch.cuda.synchronize()
                 _start.record()
             
             x = attention(
@@ -263,6 +267,7 @@ class CausalWanSelfAttention(nn.Module):
                 _end.record()
                 torch.cuda.synchronize()
                 print(f"\t\tattention: {_start.elapsed_time(_end)} ms")
+                torch.cuda.synchronize()
                 _start.record()
 
             attention(
@@ -275,6 +280,7 @@ class CausalWanSelfAttention(nn.Module):
                 _end.record()
                 torch.cuda.synchronize()
                 print(f"\t\t (DUMMY) attention: {_start.elapsed_time(_end)} ms")
+                torch.cuda.synchronize()
                 _start.record()
 
             kv_cache["global_end_index"].fill_(current_end)
@@ -362,6 +368,7 @@ class CausalWanAttentionBlock(nn.Module):
             _end = torch.cuda.Event(enable_timing=True)
 
         if profile:
+            torch.cuda.synchronize()
             _start.record()
             print("---------------- attention block ----------------")
 
@@ -382,12 +389,14 @@ class CausalWanAttentionBlock(nn.Module):
             _end.record()
             torch.cuda.synchronize()
             print(f"\t (DUMMY) self-attn input prep: {_start.elapsed_time(_end)} ms")
+            torch.cuda.synchronize()
             _start.record()
         (self.norm1(x).unflatten(dim=1, sizes=(num_frames, frame_seqlen)) * (1 + e[1]) + e[0]).flatten(1, 2) # dummy call for profiling
         if profile:
             _end.record()
             torch.cuda.synchronize()
             print(f"\t (DUMMY) self-attn input prep: {_start.elapsed_time(_end)} ms")
+            torch.cuda.synchronize()
             _start.record()
 
         tmp = (self.norm1(x).unflatten(dim=1, sizes=(num_frames, frame_seqlen)) * (1 + e[1]) + e[0]).flatten(1, 2)
@@ -396,6 +405,7 @@ class CausalWanAttentionBlock(nn.Module):
             _end.record()
             torch.cuda.synchronize()
             print(f"\tself-attn input prep: {_start.elapsed_time(_end)} ms")
+            torch.cuda.synchronize()
             _start.record()
 
     
@@ -407,6 +417,7 @@ class CausalWanAttentionBlock(nn.Module):
             _end.record()
             torch.cuda.synchronize()
             print(f"\t (DUMMY) self-attn: {_start.elapsed_time(_end)} ms")
+            torch.cuda.synchronize()
             _start.record()
         self.self_attn(
             tmp,
@@ -416,6 +427,7 @@ class CausalWanAttentionBlock(nn.Module):
             _end.record()
             torch.cuda.synchronize()
             print(f"\t (DUMMY) self-attn: {_start.elapsed_time(_end)} ms")
+            torch.cuda.synchronize()
             _start.record()
         
         y = self.self_attn(
@@ -427,6 +439,7 @@ class CausalWanAttentionBlock(nn.Module):
             _end.record()
             torch.cuda.synchronize()
             print(f"\tself-attn: {_start.elapsed_time(_end)} ms")
+            torch.cuda.synchronize()
             _start.record()
 
         # with amp.autocast(dtype=torch.float32):
@@ -450,12 +463,14 @@ class CausalWanAttentionBlock(nn.Module):
             _end.record()
             torch.cuda.synchronize()
             print(f"\t (DUMMY) cross-attn & ffn: {_start.elapsed_time(_end)} ms")
+            torch.cuda.synchronize()
             _start.record()
         cross_attn_ffn(x, context, context_lens, e, crossattn_cache)  # dummy call for profiling
         if profile:
             _end.record()
             torch.cuda.synchronize()
             print(f"\t (DUMMY) cross-attn & ffn: {_start.elapsed_time(_end)} ms")
+            torch.cuda.synchronize()
             _start.record()
 
         x = cross_attn_ffn(x, context, context_lens, e, crossattn_cache)
@@ -901,6 +916,7 @@ class CausalWanModel(ModelMixin, ConfigMixin):
             self.freqs = self.freqs.to(device)
 
         # if profile:
+        #     torch.cuda.synchronize()
         #     _start.record()
 
         if y is not None:
@@ -910,6 +926,7 @@ class CausalWanModel(ModelMixin, ConfigMixin):
         #     _end.record()
         #     torch.cuda.synchronize()
         #     print(f"cat input and cond: {_start.elapsed_time(_end)} ms")
+        #     torch.cuda.synchronize()
         #     _start.record()
 
         # embeddings
@@ -925,6 +942,7 @@ class CausalWanModel(ModelMixin, ConfigMixin):
         #     _end.record()
         #     torch.cuda.synchronize()
         #     print(f"patchify and flatten: {_start.elapsed_time(_end)} ms")
+        #     torch.cuda.synchronize()
         #     _start.record()
 
         """
@@ -946,6 +964,7 @@ class CausalWanModel(ModelMixin, ConfigMixin):
         #     _end.record()
         #     torch.cuda.synchronize()
         #     print(f"time embedding: {_start.elapsed_time(_end)} ms")
+        #     torch.cuda.synchronize()
         #     _start.record()
 
         # context
@@ -1037,6 +1056,7 @@ class CausalWanModel(ModelMixin, ConfigMixin):
             torch.cuda.synchronize()
             print(f"forward last block: {_start.elapsed_time(_end)} ms")
             # print(f"forward all blocks: {_start.elapsed_time(_end)} ms")
+            # torch.cuda.synchronize()
             # _start.record()
 
         # head
@@ -1046,6 +1066,7 @@ class CausalWanModel(ModelMixin, ConfigMixin):
         #     _end.record()
         #     torch.cuda.synchronize()
         #     print(f"head: {_start.elapsed_time(_end)} ms")
+        #     torch.cuda.synchronize()
         #     _start.record()
 
         # unpatchify
