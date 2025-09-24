@@ -28,6 +28,8 @@ from utils.wan_wrapper import WanDiffusionWrapper, WanTextEncoder
 from demo_utils.utils import generate_timestamp
 from demo_utils.memory import gpu, get_cuda_free_memory_gb, DynamicSwapInstaller, move_model_to_device_with_memory_preservation
 
+from torch.profiler import profile, record_function, ProfilerActivity
+
 # Parse arguments
 parser = argparse.ArgumentParser()
 parser.add_argument('--port', type=int, default=5001)
@@ -237,6 +239,19 @@ def frame_sender_worker():
 
     print("📡 Frame sender thread stopped")
 
+@torch.no_grad()
+def generate_video_stream___prof___(prompt, seed, enable_torch_compile=False, enable_fp8=False, use_taehv=False):
+    with profile(
+        activities=[ProfilerActivity.CPU, ProfilerActivity.CUDA],
+        record_shapes=True,
+        profile_memory=True
+    ) as prof:
+        with record_function("generate_video_stream"):
+            generate_video_stream(prompt, seed, enable_torch_compile, enable_fp8, use_taehv)
+
+    print("============ prof export ============")
+    prof.export_chrome_trace(f"trace_{time.time() :8f}.json")
+    print("============  prof done  ============")
 
 @torch.no_grad()
 def generate_video_stream(prompt, seed, enable_torch_compile=False, enable_fp8=False, use_taehv=False):
@@ -702,7 +717,7 @@ def handle_start_generation(data):
         return
 
     # Start generation in background thread
-    socketio.start_background_task(generate_video_stream, prompt, seed,
+    socketio.start_background_task(generate_video_stream___prof___, prompt, seed,
                                    enable_torch_compile, enable_fp8, use_taehv)
     emit('status', {'message': 'Generation started - frames will be sent immediately'})
 
