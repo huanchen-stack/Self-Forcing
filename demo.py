@@ -30,6 +30,18 @@ from demo_utils.memory import gpu, get_cuda_free_memory_gb, DynamicSwapInstaller
 
 from torch.profiler import profile, record_function, ProfilerActivity
 
+
+# os.environ["OMP_NUM_THREADS"] = "1"
+# os.environ["MKL_NUM_THREADS"] = "1"
+torch.set_num_threads(1)
+# torch.set_num_interop_threads(1)
+
+# print("OMP_NUM_THREADS =", os.getenv("OMP_NUM_THREADS"))
+# print("MKL_NUM_THREADS =", os.getenv("MKL_NUM_THREADS"))
+print("PyTorch intra-op threads =", torch.get_num_threads())
+print("PyTorch inter-op threads =", torch.get_num_interop_threads())
+
+
 # Parse arguments
 parser = argparse.ArgumentParser()
 parser.add_argument('--port', type=int, default=5001)
@@ -62,6 +74,11 @@ frame_rate = 6
 def initialize_vae_decoder(use_taehv=False, use_trt=False):
     """Initialize VAE decoder based on the selected option"""
     global current_vae_decoder, current_use_taehv
+    """
+    print("[NONE] 🔧 Initializing VAE decoder... with NONE!!!")
+    current_vae_decoder = "blablabla"
+    return "blablabla"
+    """
 
     if use_trt:
         from demo_utils.vae import VAETRTWrapper
@@ -174,7 +191,7 @@ def tensor_to_base64_frame(frame_tensor):
 
     # Convert to PIL Image
     if frame.shape[2] == 3:  # RGB
-        image = Image.fromarray(frame, 'RGB')
+        image = Image.fromarray(frame).convert('RGB')
     else:  # Handle other formats
         image = Image.fromarray(frame)
 
@@ -250,7 +267,7 @@ def generate_video_stream___prof___(prompt, seed, enable_torch_compile=False, en
             generate_video_stream(prompt, seed, enable_torch_compile, enable_fp8, use_taehv)
 
     print("============ prof export ============")
-    prof.export_chrome_trace(f"trace_{time.time() :8f}.json")
+    prof.export_chrome_trace(f"prof/trace_{time.time() :8f}.json")
     print("============  prof done  ============")
 
 @torch.no_grad()
@@ -281,6 +298,7 @@ def generate_video_stream(prompt, seed, enable_torch_compile=False, enable_fp8=F
 
         emit_progress('Starting generation...', 0)
 
+        # """
         # Handle VAE decoder switching
         if use_taehv != current_use_taehv:
             emit_progress('Switching VAE decoder...', 2)
@@ -288,6 +306,7 @@ def generate_video_stream(prompt, seed, enable_torch_compile=False, enable_fp8=F
             current_vae_decoder = initialize_vae_decoder(use_taehv=use_taehv)
             # Update pipeline with new VAE decoder
             pipeline.vae = current_vae_decoder
+        # """
 
         # Handle FP8 quantization
         if enable_fp8 and not fp8_applied:
@@ -347,12 +366,15 @@ def generate_video_stream(prompt, seed, enable_torch_compile=False, enable_fp8=F
         
         print(f"Frames status: total {sum(all_num_frames)}, per block {all_num_frames}")
         
+        """
         if current_use_taehv:
             vae_cache = None
         else:
             vae_cache = ZERO_VAE_CACHE
             for i in range(len(vae_cache)):
                 vae_cache[i] = vae_cache[i].to(device=gpu, dtype=torch.float16)
+        """
+        vae_cache = None
 
         total_frames_sent = 0
         generation_start_time = time.time()
@@ -499,7 +521,7 @@ def generate_video_stream(prompt, seed, enable_torch_compile=False, enable_fp8=F
                     print(f"KV cache update for next block completed in {kv_update_time:.2f} .s")
                     print(f"denoised_pred shape: {denoised_pred.shape}, dtype: {denoised_pred.dtype}")
 
-            print(f"decoding args: args.trt {args.trt}, current_use_taehv {current_use_taehv}, vae_cache is None {vae_cache is None if not args.trt else 'N/A'}")
+            # print(f"decoding args: args.trt {args.trt}, current_use_taehv {current_use_taehv}, vae_cache is None {vae_cache is None if not args.trt else 'N/A'}")
 
             # Decode to pixels and send frames immediately
             print(f"🎨 Decoding block {idx+1} to pixels...")
@@ -535,11 +557,14 @@ def generate_video_stream(prompt, seed, enable_torch_compile=False, enable_fp8=F
                     else:
                         pixels = pixels[:, 12:, :, :, :]
 
+                    print("##### [taehv vae] #####", pixels.shape)
+
                 else:
                     """
                     rand pixels to see if vae is causing "cold start"
                     pixels = torch.rand(1, 12, 3, 480, 832)
                     """
+                    # pixels = torch.rand(1, 12, 3, 480, 832)
                     pixels, vae_cache = current_vae_decoder(denoised_pred.half(), *vae_cache)
                     
                     # print(f"denoised_pred shape: {denoised_pred.shape}")
@@ -549,6 +574,7 @@ def generate_video_stream(prompt, seed, enable_torch_compile=False, enable_fp8=F
                     #     print(f"\t vae_c shape: {vae_c.shape}")
                     if idx == 0:
                         pixels = pixels[:, 3:, :, :, :]  # Skip first 3 frames of first block
+                    print("##### [vae] #####", pixels.shape)
 
             if profile:
                 decoding_end.record()
@@ -718,7 +744,7 @@ def handle_start_generation(data):
         return
 
     # Start generation in background thread
-    socketio.start_background_task(generate_video_stream___prof___, prompt, seed,
+    socketio.start_background_task(generate_video_stream, prompt, seed,
                                    enable_torch_compile, enable_fp8, use_taehv)
     emit('status', {'message': 'Generation started - frames will be sent immediately'})
 
