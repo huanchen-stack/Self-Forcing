@@ -107,7 +107,7 @@ class CausalWanSelfAttention(nn.Module):
             cache_start = current_start
 
         profile = True
-        profile = False
+        # profile = False
         if profile:
             _start = torch.cuda.Event(enable_timing=True)
             _end = torch.cuda.Event(enable_timing=True)
@@ -126,7 +126,7 @@ class CausalWanSelfAttention(nn.Module):
         if profile:
             _end.record()
             torch.cuda.synchronize()
-            print(f"\t\tqkv: {_start.elapsed_time(_end)} ms")
+            print(f"\t\tqkv norm: {_start.elapsed_time(_end)} ms")
             torch.cuda.synchronize()
             _start.record()
 
@@ -257,28 +257,30 @@ class CausalWanSelfAttention(nn.Module):
                 torch.cuda.synchronize()
                 _start.record()
             
-            # if profile:
-            #     attention(
-            #         roped_query,
-            #         kv_cache["k"][:, max(0, local_end_index - self.max_attention_size):local_end_index],
-            #         kv_cache["v"][:, max(0, local_end_index - self.max_attention_size):local_end_index]
-            #     )  # dummy call for profiling
-            #     _end.record()
-            #     torch.cuda.synchronize()
-            #     print(f"\t\t (DUMMY) attention: {_start.elapsed_time(_end)} ms")
-            #     torch.cuda.synchronize()
-            #     _start.record()
-            # if profile:
-            #     attention(
-            #         roped_query,
-            #         kv_cache["k"][:, max(0, local_end_index - self.max_attention_size):local_end_index],
-            #         kv_cache["v"][:, max(0, local_end_index - self.max_attention_size):local_end_index]
-            #     )  # dummy call for profiling
-            #     _end.record()
-            #     torch.cuda.synchronize()
-            #     print(f"\t\t (DUMMY) attention: {_start.elapsed_time(_end)} ms")
-            #     torch.cuda.synchronize()
-            #     _start.record()
+            """
+            if profile:
+                attention(
+                    roped_query,
+                    kv_cache["k"][:, max(0, local_end_index - self.max_attention_size):local_end_index],
+                    kv_cache["v"][:, max(0, local_end_index - self.max_attention_size):local_end_index]
+                )  # dummy call for profiling
+                _end.record()
+                torch.cuda.synchronize()
+                print(f"\t\t (DUMMY) attention: {_start.elapsed_time(_end)} ms")
+                torch.cuda.synchronize()
+                _start.record()
+            if profile:
+                attention(
+                    roped_query,
+                    kv_cache["k"][:, max(0, local_end_index - self.max_attention_size):local_end_index],
+                    kv_cache["v"][:, max(0, local_end_index - self.max_attention_size):local_end_index]
+                )  # dummy call for profiling
+                _end.record()
+                torch.cuda.synchronize()
+                print(f"\t\t (DUMMY) attention: {_start.elapsed_time(_end)} ms")
+                torch.cuda.synchronize()
+                _start.record()
+            """
 
             x = attention(
                 roped_query,
@@ -289,6 +291,7 @@ class CausalWanSelfAttention(nn.Module):
             if profile:
                 _end.record()
                 torch.cuda.synchronize()
+                print(f'\t\tattention input size: \n\t\t\t rope: {roped_query.shape} \n\t\t\t k: {kv_cache["k"][:, max(0, local_end_index - self.max_attention_size):local_end_index].shape} \n\t\t\t v: {kv_cache["v"][:, max(0, local_end_index - self.max_attention_size):local_end_index].shape}')
                 print(f"\t\tattention: {_start.elapsed_time(_end)} ms")
                 torch.cuda.synchronize()
                 _start.record()
@@ -373,7 +376,7 @@ class CausalWanAttentionBlock(nn.Module):
         """
 
         profile = True
-        profile = False
+        # profile = False
         if profile:
             _start = torch.cuda.Event(enable_timing=True)
             _end = torch.cuda.Event(enable_timing=True)
@@ -389,12 +392,13 @@ class CausalWanAttentionBlock(nn.Module):
         e = (self.modulation.unsqueeze(1) + e).chunk(6, dim=2)
         # assert e[0].dtype == torch.float32
 
-        # self-attention
+        # # self-attention
         # y = self.self_attn(
         #     (self.norm1(x).unflatten(dim=1, sizes=(num_frames, frame_seqlen)) * (1 + e[1]) + e[0]).flatten(1, 2),
         #     seq_lens, grid_sizes,
         #     freqs, block_mask, kv_cache, current_start, cache_start)
-
+        
+        """
         if profile:
             (self.norm1(x).unflatten(dim=1, sizes=(num_frames, frame_seqlen)) * (1 + e[1]) + e[0]).flatten(1, 2) # dummy call for profiling
             _end.record()
@@ -409,9 +413,11 @@ class CausalWanAttentionBlock(nn.Module):
             print(f"\t (DUMMY) self-attn input prep: {_start.elapsed_time(_end)} ms")
             torch.cuda.synchronize()
             _start.record()
+        """
 
         tmp = (self.norm1(x).unflatten(dim=1, sizes=(num_frames, frame_seqlen)) * (1 + e[1]) + e[0]).flatten(1, 2)
 
+        """
         if profile:
             _end.record()
             torch.cuda.synchronize()
@@ -419,7 +425,6 @@ class CausalWanAttentionBlock(nn.Module):
             torch.cuda.synchronize()
             _start.record()
 
-    
         if profile:
             self.self_attn(
                 tmp,
@@ -440,7 +445,8 @@ class CausalWanAttentionBlock(nn.Module):
             print(f"\t (DUMMY) self-attn: {_start.elapsed_time(_end)} ms")
             torch.cuda.synchronize()
             _start.record()
-        
+        """
+
         y = self.self_attn(
             tmp,
             seq_lens, grid_sizes,
@@ -469,6 +475,22 @@ class CausalWanAttentionBlock(nn.Module):
                      frame_seqlen)) * e[5]).flatten(1, 2)
             return x
 
+        def cross_attn_(x, context, context_lens, crossattn_cache=None):
+            x = x + self.cross_attn(self.norm3(x), context,
+                                    context_lens, crossattn_cache=crossattn_cache)
+            return x
+
+        def _ffn(x, e):
+            y = self.ffn(
+                (self.norm2(x).unflatten(dim=1, sizes=(num_frames,
+                 frame_seqlen)) * (1 + e[4]) + e[3]).flatten(1, 2)
+            )
+            # with amp.autocast(dtype=torch.float32):
+            x = x + (y.unflatten(dim=1, sizes=(num_frames,
+                     frame_seqlen)) * e[5]).flatten(1, 2)
+            return x
+
+        """
         if profile:
             cross_attn_ffn(x, context, context_lens, e, crossattn_cache)  # dummy call for profiling
             _end.record()
@@ -483,13 +505,34 @@ class CausalWanAttentionBlock(nn.Module):
             print(f"\t (DUMMY) cross-attn & ffn: {_start.elapsed_time(_end)} ms")
             torch.cuda.synchronize()
             _start.record()
+        """
 
-        x = cross_attn_ffn(x, context, context_lens, e, crossattn_cache)
+        # # original cross_attn_ffn
+        # x = cross_attn_ffn(x, context, context_lens, e, crossattn_cache)
+
+        # if profile:
+        #     _end.record()
+        #     torch.cuda.synchronize()
+        #     print(f"\tcross-attn & ffn: {_start.elapsed_time(_end)} ms")
+
+        x = cross_attn_(x, context, context_lens, crossattn_cache)
 
         if profile:
             _end.record()
             torch.cuda.synchronize()
-            print(f"\tcross-attn & ffn: {_start.elapsed_time(_end)} ms")
+            print(f"\tcross-attn: {_start.elapsed_time(_end)} ms")
+            torch.cuda.synchronize()
+            _start.record()
+
+        x = _ffn(x, e)
+
+        if profile:
+            _end.record()
+            torch.cuda.synchronize()
+            print(f"\tffn: {_start.elapsed_time(_end)} ms")
+            torch.cuda.synchronize()
+            _start.record()
+
 
         return x
 

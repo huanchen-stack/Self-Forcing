@@ -54,6 +54,9 @@ args = parser.parse_args()
 print(f'Free VRAM {get_cuda_free_memory_gb(gpu)} GB')
 low_memory = get_cuda_free_memory_gb(gpu) < 40
 
+if low_memory:
+    print("⚠️ Low VRAM mode activated - models will be swapped dynamically to save memory")
+
 # Load models
 config = OmegaConf.load(args.config_path)
 default_config = OmegaConf.load("configs/default_config.yaml")
@@ -366,15 +369,15 @@ def generate_video_stream(prompt, seed, enable_torch_compile=False, enable_fp8=F
         
         print(f"Frames status: total {sum(all_num_frames)}, per block {all_num_frames}")
         
-        """
+        # """
         if current_use_taehv:
             vae_cache = None
         else:
             vae_cache = ZERO_VAE_CACHE
             for i in range(len(vae_cache)):
                 vae_cache[i] = vae_cache[i].to(device=gpu, dtype=torch.float16)
-        """
-        vae_cache = None
+        # """
+        # vae_cache = None
 
         total_frames_sent = 0
         generation_start_time = time.time()
