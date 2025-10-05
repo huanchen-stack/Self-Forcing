@@ -285,6 +285,7 @@ class CausalInferencePipeline(torch.nn.Module):
         if self.local_attn_size != -1:
             # Use the local attention size to compute the KV cache size
             kv_cache_size = self.local_attn_size * self.frame_seq_length
+            print(f" - Using local attention size x frame seq length = {self.local_attn_size} x {self.frame_seq_length} to set KV cache size to {kv_cache_size}")
         else:
             # Use the default KV cache size
             kv_cache_size = 32760

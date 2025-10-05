@@ -142,7 +142,11 @@ def initialize_vae_decoder(use_taehv=False, use_trt=False):
 # Initialize with default VAE
 vae_decoder = initialize_vae_decoder(use_taehv=False, use_trt=args.trt)
 
-transformer = WanDiffusionWrapper(is_causal=True)
+transformer = WanDiffusionWrapper(
+    is_causal=True,
+    local_attn_size=21,
+    sink_size=3,
+)
 state_dict = torch.load(args.checkpoint_path, map_location="cpu")
 transformer.load_state_dict(state_dict['generator_ema'])
 
@@ -356,13 +360,13 @@ def generate_video_stream(prompt, seed, enable_torch_compile=False, enable_fp8=F
         # TODO: see if 21 = 3 * 7 (3 = pipeline.num_frame_per_block, 7 = num_blocks);
         #   if so, if we were to change total number of blocks, we need to change noise shape too
 
-        noise = torch.randn([1, 21, 16, 60, 104], device=gpu, dtype=torch.float16, generator=rnd)
+        noise = torch.randn([1, 21*2, 16, 60, 104], device=gpu, dtype=torch.float16, generator=rnd)
 
         # Generation parameters
         
         # TODO: see if num_blocks and pipeline.num_frame_per_block can be adjusted for different lengths
         
-        num_blocks = 7
+        num_blocks = 7*2
         current_start_frame = 0
         num_input_frames = 0
         all_num_frames = [pipeline.num_frame_per_block] * num_blocks
