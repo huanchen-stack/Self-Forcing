@@ -210,9 +210,9 @@ def main() -> None:
     set_seed(args.seed)
 
     if args.cudagraph:
-        os.environ["PRINT_ENABLED"] = "0"
+        os.environ["CUDAGRAPH"] = "1"
     else:
-        os.environ.setdefault("PRINT_ENABLED", "1")
+        os.environ.setdefault("CUDAGRAPH", "0")
 
     transformer = RandomWanTransformer(
         frames_per_block=args.frames_per_block,

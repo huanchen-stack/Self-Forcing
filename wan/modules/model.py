@@ -12,15 +12,25 @@ from .attention import flash_attention
 __all__ = ['WanModel']
 
 
-def sinusoidal_embedding_1d(dim, position):
+def precompute_sinusoidal_base(dim: int, theta: float = 10000.0) -> torch.Tensor:
+    assert dim % 2 == 0
+    half = dim // 2
+    exponents = torch.arange(half, dtype=torch.float64) / half
+    base = torch.pow(theta, -exponents)
+    return base
+
+
+def sinusoidal_embedding_1d(dim, position, base_freqs=None):
     # preprocess
     assert dim % 2 == 0
     half = dim // 2
     position = position.type(torch.float64)
 
-    # calculation
-    sinusoid = torch.outer(
-        position, torch.pow(10000, -torch.arange(half).to(position).div(half)))
+    if base_freqs is None:
+        base_freqs = precompute_sinusoidal_base(dim)
+        base_freqs = base_freqs.to(position.device)
+
+    sinusoid = torch.outer(position, base_freqs)
     x = torch.cat([torch.cos(sinusoid), torch.sin(sinusoid)], dim=1)
     return x
 

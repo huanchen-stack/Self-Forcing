@@ -1,6 +1,7 @@
 from wan.modules.attention import attention
 from wan.modules.model import (
     WanRMSNorm,
+    precompute_sinusoidal_base,
     rope_apply,
     WanLayerNorm,
     WAN_CROSSATTENTION_CLASSES,
@@ -15,6 +16,7 @@ from diffusers.models.modeling_utils import ModelMixin
 import torch.nn as nn
 import torch
 import math
+import os
 import torch.distributed as dist
 
 from demo_utils.helper import print
@@ -334,6 +336,7 @@ class CausalWanAttentionBlock(nn.Module):
         self.qk_norm = qk_norm
         self.cross_attn_norm = cross_attn_norm
         self.eps = eps
+        self._use_cudagraph = os.getenv("CUDAGRAPH", "0") == "1"
 
         # layers
         self.norm1 = WanLayerNorm(dim, eps)
@@ -665,6 +668,10 @@ class CausalWanModel(ModelMixin, ConfigMixin):
             nn.Linear(text_dim, dim), nn.GELU(approximate='tanh'),
             nn.Linear(dim, dim))
 
+        self._sinusoidal_base = None
+        if self._use_cudagraph:
+            self._sinusoidal_base = precompute_sinusoidal_base(freq_dim).to('cuda')
+
         self.time_embedding = nn.Sequential(
             nn.Linear(freq_dim, dim), nn.SiLU(), nn.Linear(dim, dim))
         self.time_projection = nn.Sequential(
@@ -703,6 +710,7 @@ class CausalWanModel(ModelMixin, ConfigMixin):
 
         self.num_frame_per_block = 1
         self.independent_first_frame = False
+
 
     def _set_gradient_checkpointing(self, module, value=False):
         self.gradient_checkpointing = value
@@ -1013,7 +1021,11 @@ class CausalWanModel(ModelMixin, ConfigMixin):
         # time embeddings
         # with amp.autocast(dtype=torch.float32):
         e = self.time_embedding(
-            sinusoidal_embedding_1d(self.freq_dim, t.flatten()).type_as(x))
+            sinusoidal_embedding_1d(
+                self.freq_dim,
+                t.flatten(),
+                base_freqs=self._sinusoidal_base
+            ).type_as(x))
         e0 = self.time_projection(e).unflatten(
             1, (6, self.dim)).unflatten(dim=0, sizes=t.shape)
         # assert e.dtype == torch.float32 and e0.dtype == torch.float32
@@ -1223,7 +1235,11 @@ class CausalWanModel(ModelMixin, ConfigMixin):
         # time embeddings
         # with amp.autocast(dtype=torch.float32):
         e = self.time_embedding(
-            sinusoidal_embedding_1d(self.freq_dim, t.flatten()).type_as(x))
+            sinusoidal_embedding_1d(
+                self.freq_dim,
+                t.flatten(),
+                base_freqs=self._sinusoidal_base
+            ).type_as(x))
         e0 = self.time_projection(e).unflatten(
             1, (6, self.dim)).unflatten(dim=0, sizes=t.shape)
         # assert e.dtype == torch.float32 and e0.dtype == torch.float32
@@ -1255,7 +1271,11 @@ class CausalWanModel(ModelMixin, ConfigMixin):
             if aug_t is None:
                 aug_t = torch.zeros_like(t)
             e_clean = self.time_embedding(
-                sinusoidal_embedding_1d(self.freq_dim, aug_t.flatten()).type_as(x))
+                sinusoidal_embedding_1d(
+                    self.freq_dim,
+                    aug_t.flatten(),
+                    base_freqs=self._sinusoidal_base
+                ).type_as(x))
             e0_clean = self.time_projection(e_clean).unflatten(
                 1, (6, self.dim)).unflatten(dim=0, sizes=t.shape)
             e0 = torch.cat([e0_clean, e0], dim=1)
