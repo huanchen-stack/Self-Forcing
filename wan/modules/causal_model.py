@@ -110,7 +110,7 @@ class CausalWanSelfAttention(nn.Module):
             cache_start = current_start
 
         profile = True
-        # profile = False
+        profile = False
         if profile:
             _start = torch.cuda.Event(enable_timing=True)
             _end = torch.cuda.Event(enable_timing=True)
@@ -379,7 +379,7 @@ class CausalWanAttentionBlock(nn.Module):
         """
 
         profile = True
-        # profile = False
+        profile = False
         if profile:
             _start = torch.cuda.Event(enable_timing=True)
             _end = torch.cuda.Event(enable_timing=True)
