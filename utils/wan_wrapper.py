@@ -10,6 +10,8 @@ from wan.modules.vae import _video_vae
 from wan.modules.t5 import umt5_xxl
 from wan.modules.causal_model import CausalWanModel
 
+from demo_utils.helper import print
+
 
 class WanTextEncoder(torch.nn.Module):
     def __init__(self) -> None:

@@ -31,6 +31,55 @@ from demo_utils.memory import gpu, get_cuda_free_memory_gb, DynamicSwapInstaller
 from torch.profiler import profile, record_function, ProfilerActivity
 
 
+class TransformerGraphCache:
+    """Manage CUDA graphs for transformer denoising calls."""
+
+    def __init__(self, transformer_module):
+        self.transformer = transformer_module
+        self.graph_entries = {}
+
+    @staticmethod
+    def _make_entry(noisy_sample, timestep_sample):
+        return {
+            "graph": torch.cuda.CUDAGraph(),
+            "noisy_static": torch.empty_like(noisy_sample),
+            "timestep_static": torch.empty_like(timestep_sample),
+            "output_static": torch.empty_like(noisy_sample),
+        }
+
+    def run(self, key, noisy_sample, timestep_sample, call_kwargs):
+        entry = self.graph_entries.get(key)
+
+        if entry is None or ("current_start" in entry and entry["current_start"] != call_kwargs["current_start"]):
+            entry = self._make_entry(noisy_sample, timestep_sample)
+            entry["current_start"] = call_kwargs["current_start"]
+
+            entry["noisy_static"].copy_(noisy_sample)
+            entry["timestep_static"].copy_(timestep_sample)
+
+            torch.cuda.synchronize()
+            with torch.cuda.graph(entry["graph"]):
+                graph_kwargs = {**call_kwargs}
+                graph_kwargs.update({
+                    "noisy_image_or_video": entry["noisy_static"],
+                    "timestep": entry["timestep_static"]
+                })
+                outputs = self.transformer(**graph_kwargs)
+
+                if isinstance(outputs, tuple):
+                    outputs = outputs[1]
+                entry["output_static"].copy_(outputs)
+
+            self.graph_entries[key] = entry
+            return entry["output_static"]
+
+        entry["noisy_static"].copy_(noisy_sample)
+        entry["timestep_static"].copy_(timestep_sample)
+        entry["current_start"] = call_kwargs["current_start"]
+
+        entry["graph"].replay()
+        return entry["output_static"]
+
 # os.environ["OMP_NUM_THREADS"] = "1"
 # os.environ["MKL_NUM_THREADS"] = "1"
 torch.set_num_threads(1)
@@ -49,6 +98,8 @@ parser.add_argument('--host', type=str, default='0.0.0.0')
 parser.add_argument("--checkpoint_path", type=str, default='./checkpoints/self_forcing_dmd.pt')
 parser.add_argument("--config_path", type=str, default='./configs/self_forcing_dmd.yaml')
 parser.add_argument('--trt', action='store_true')
+parser.add_argument('--cudagraph', action='store_true',
+                    help='Enable CUDA graph capture for transformer blocks (prints disabled automatically)')
 args = parser.parse_args()
 
 print(f'Free VRAM {get_cuda_free_memory_gb(gpu)} GB')
@@ -56,6 +107,11 @@ low_memory = get_cuda_free_memory_gb(gpu) < 40
 
 if low_memory:
     print("⚠️ Low VRAM mode activated - models will be swapped dynamically to save memory")
+
+if args.cudagraph:
+    os.environ["PRINT_ENABLED"] = "0"
+else:
+    os.environ.setdefault("PRINT_ENABLED", "1")
 
 # Load models
 config = OmegaConf.load(args.config_path)
@@ -406,6 +462,8 @@ def generate_video_stream(prompt, seed, enable_torch_compile=False, enable_fp8=F
         if profile:
             _start.record()
 
+        graph_cache = TransformerGraphCache(transformer) if args.cudagraph else None
+
         for idx, current_num_frames in enumerate(all_num_frames):
             
             print(f"In loop: idx {idx}, current_num_frames {current_num_frames}, current_start_frame {current_start_frame}")
@@ -442,19 +500,35 @@ def generate_video_stream(prompt, seed, enable_torch_compile=False, enable_fp8=F
                                       dtype=torch.int64) * current_timestep
                 # print(f"\t timestep shape: {timestep.shape}, value: {timestep}")
 
+                run_kwargs = {
+                    "conditional_dict": conditional_dict,
+                    "kv_cache": pipeline.kv_cache1,
+                    "crossattn_cache": pipeline.crossattn_cache,
+                    "current_start": current_start_frame * pipeline.frame_seq_length
+                }
+
                 if index < len(pipeline.denoising_step_list) - 1:
 
                     if profile:
                         transformer_start.record()
-                    
-                    _, denoised_pred = transformer(
-                        noisy_image_or_video=noisy_input,
-                        conditional_dict=conditional_dict,
-                        timestep=timestep,
-                        kv_cache=pipeline.kv_cache1,
-                        crossattn_cache=pipeline.crossattn_cache,
-                        current_start=current_start_frame * pipeline.frame_seq_length
-                    )
+
+                    if args.cudagraph:
+                        graph_key = idx if idx <= 6 else "steady"
+                        denoised_pred = graph_cache.run(
+                            graph_key,
+                            noisy_input,
+                            timestep,
+                            run_kwargs
+                        )
+                    else:
+                        _, denoised_pred = transformer(
+                            noisy_image_or_video=noisy_input,
+                            conditional_dict=conditional_dict,
+                            timestep=timestep,
+                            kv_cache=pipeline.kv_cache1,
+                            crossattn_cache=pipeline.crossattn_cache,
+                            current_start=current_start_frame * pipeline.frame_seq_length
+                        )
 
                     if profile:
                         transformer_end.record()
@@ -476,14 +550,23 @@ def generate_video_stream(prompt, seed, enable_torch_compile=False, enable_fp8=F
                     if profile:
                         transformer_start.record()
 
-                    _, denoised_pred = transformer(
-                        noisy_image_or_video=noisy_input,
-                        conditional_dict=conditional_dict,
-                        timestep=timestep,
-                        kv_cache=pipeline.kv_cache1,
-                        crossattn_cache=pipeline.crossattn_cache,
-                        current_start=current_start_frame * pipeline.frame_seq_length
-                    )
+                    if args.cudagraph:
+                        graph_key = idx if idx <= 6 else "steady"
+                        denoised_pred = graph_cache.run(
+                            graph_key,
+                            noisy_input,
+                            timestep,
+                            run_kwargs
+                        )
+                    else:
+                        _, denoised_pred = transformer(
+                            noisy_image_or_video=noisy_input,
+                            conditional_dict=conditional_dict,
+                            timestep=timestep,
+                            kv_cache=pipeline.kv_cache1,
+                            crossattn_cache=pipeline.crossattn_cache,
+                            current_start=current_start_frame * pipeline.frame_seq_length
+                        )
 
                     if profile:
                         transformer_end.record()
@@ -511,14 +594,25 @@ def generate_video_stream(prompt, seed, enable_torch_compile=False, enable_fp8=F
                 if profile:
                     transformer_start.record()
 
-                transformer(
-                    noisy_image_or_video=denoised_pred,
-                    conditional_dict=conditional_dict,
-                    timestep=torch.zeros_like(timestep),
-                    kv_cache=pipeline.kv_cache1,
-                    crossattn_cache=pipeline.crossattn_cache,
-                    current_start=current_start_frame * pipeline.frame_seq_length,
-                )
+                zero_timestep = torch.zeros_like(timestep)
+
+                if args.cudagraph:
+                    graph_key = idx if idx <= 6 else "steady"
+                    graph_cache.run(
+                        graph_key,
+                        denoised_pred,
+                        zero_timestep,
+                        run_kwargs
+                    )
+                else:
+                    transformer(
+                        noisy_image_or_video=denoised_pred,
+                        conditional_dict=conditional_dict,
+                        timestep=zero_timestep,
+                        kv_cache=pipeline.kv_cache1,
+                        crossattn_cache=pipeline.crossattn_cache,
+                        current_start=current_start_frame * pipeline.frame_seq_length,
+                    )
 
                 if profile:
                     transformer_end.record()
