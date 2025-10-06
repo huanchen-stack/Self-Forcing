@@ -97,8 +97,13 @@ class RandomWanTransformer(torch.nn.Module):
         self.head_dim = dim // num_heads
         self.kv_len = max(local_attn_size * self.frame_seq_len, self.seq_len)
 
-    def prepare_caches(self, batch: int, device: torch.device, dtype: torch.dtype) -> list[Dict[str, torch.Tensor]]:
-        return init_kv_cache(
+    def prepare_caches(
+        self,
+        batch: int,
+        device: torch.device,
+        dtype: torch.dtype,
+    ) -> tuple[list[Dict[str, torch.Tensor]], list[Dict[str, torch.Tensor]]]:
+        kv_cache = init_kv_cache(
             num_layers=self.num_layers,
             batch=batch,
             kv_len=self.kv_len,
@@ -108,19 +113,31 @@ class RandomWanTransformer(torch.nn.Module):
             dtype=dtype,
         )
 
+        crossattn_cache: list[Dict[str, torch.Tensor]] = []
+        cache_len = self.text_len
+        for _ in range(self.num_layers):
+            crossattn_cache.append({
+                "k": torch.zeros(batch, cache_len, self.num_heads, self.head_dim, device=device, dtype=dtype),
+                "v": torch.zeros(batch, cache_len, self.num_heads, self.head_dim, device=device, dtype=dtype),
+                "is_init": False,
+            })
+
+        return kv_cache, crossattn_cache
+
     def forward(
         self,
         noisy_image_or_video: torch.Tensor,
         timestep: torch.Tensor,
         conditional_dict: Dict[str, torch.Tensor],
         kv_cache: list[Dict[str, torch.Tensor]],
+        crossattn_cache: list[Dict[str, torch.Tensor]],
         current_start: int,
         **_: Any,
     ) -> tuple[None, torch.Tensor]:
         # Convert [B, F, C, H, W] -> list of [C, F, H, W]
         x_list = [sample.permute(1, 0, 2, 3) for sample in noisy_image_or_video]
-        t = timestep[:, 0]
-        context_list = [conditional_dict["prompt_embeds"][i] for i in range(timestep.shape[0])]
+        t = timestep
+        context_list = [conditional_dict["prompt_embeds"][i] for i in range(t.shape[0])]
 
         outputs = self.model(
             x=x_list,
@@ -128,7 +145,7 @@ class RandomWanTransformer(torch.nn.Module):
             context=context_list,
             seq_len=self.seq_len,
             kv_cache=kv_cache,
-            crossattn_cache=None,
+            crossattn_cache=crossattn_cache,
             current_start=current_start,
         )
 
@@ -220,7 +237,7 @@ def main() -> None:
     transformer.eval()
     transformer.requires_grad_(False)
 
-    kv_cache = transformer.prepare_caches(batch=1, device=device, dtype=dtype)
+    kv_cache, crossattn_cache = transformer.prepare_caches(batch=1, device=device, dtype=dtype)
 
     text_embeds = torch.randn(1, transformer.text_len, transformer.text_dim, device=device, dtype=dtype)
     conditional_dict = {"prompt_embeds": text_embeds}
@@ -257,6 +274,7 @@ def main() -> None:
             call_kwargs = {
                 "conditional_dict": conditional_dict,
                 "kv_cache": kv_cache,
+                "crossattn_cache": crossattn_cache,
                 "current_start": current_start_frame * transformer.frame_seq_len,
             }
 
