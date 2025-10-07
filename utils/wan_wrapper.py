@@ -247,11 +247,16 @@ class WanDiffusionWrapper(torch.nn.Module):
         # print("### wan_wrapper.py ###")
         # print("#### forward ####")
         # import time
-        model_start = torch.cuda.Event(enable_timing=True)
-        model_end = torch.cuda.Event(enable_timing=True)
 
-        cache_prep_start = torch.cuda.Event(enable_timing=True)
-        cache_prep_end = torch.cuda.Event(enable_timing=True)
+        profile = True
+        profile = False
+
+        if profile:
+            model_start = torch.cuda.Event(enable_timing=True)
+            model_end = torch.cuda.Event(enable_timing=True)
+
+            # cache_prep_start = torch.cuda.Event(enable_timing=True)
+            # cache_prep_end = torch.cuda.Event(enable_timing=True)
 
         logits = None
         # X0 prediction
@@ -302,7 +307,8 @@ class WanDiffusionWrapper(torch.nn.Module):
             print(f"##### cache time: ""{cache_prep_start.elapsed_time(cache_prep_end)} #####")
             """
 
-            model_start.record()
+            if profile:
+                model_start.record()
 
             flow_pred = self.model(
                 noisy_image_or_video.permute(0, 2, 1, 3, 4),
@@ -313,10 +319,11 @@ class WanDiffusionWrapper(torch.nn.Module):
                 current_start=current_start,
                 cache_start=cache_start
             ).permute(0, 2, 1, 3, 4)
-            
-            model_end.record()
-            torch.cuda.synchronize()
-            print(f"##### model time: {model_start.elapsed_time(model_end)} #####")
+
+            if profile:
+                model_end.record()
+                torch.cuda.synchronize()
+                print(f"##### model time: {model_start.elapsed_time(model_end)} #####")
             # print("========= shapes =========")
             # print(f"noisy_image_or_video: {noisy_image_or_video.shape}")
             # print(f"noisy_image_or_video permute: {noisy_image_or_video.permute(0, 2, 1, 3, 4).shape}")

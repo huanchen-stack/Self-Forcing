@@ -338,6 +338,7 @@ def generate_video_stream(prompt, seed, enable_torch_compile=False, enable_fp8=F
     """Generate video and push frames immediately to frontend."""
     global generation_active, stop_event, frame_send_queue, sender_thread, models_compiled, torch_compile_applied, fp8_applied, current_vae_decoder, current_use_taehv, frame_rate, anim_name
 
+    # if True:
     try:
         generation_active = True
         stop_event.clear()
@@ -445,7 +446,7 @@ def generate_video_stream(prompt, seed, enable_torch_compile=False, enable_fp8=F
         emit_progress('Generating frames... (frontend handles timing)', 15)
 
         profile = True
-        # profile = False
+        profile = False
         if profile:
             _start = torch.cuda.Event(enable_timing=True)
             _end = torch.cuda.Event(enable_timing=True)
@@ -709,7 +710,9 @@ def generate_video_stream(prompt, seed, enable_torch_compile=False, enable_fp8=F
                 block_time = "not profiling"
 
             queue_time = time.time() - queue_start
-            print(f"✅ Block {idx+1} completed in {block_time:.2f} ms ({block_frames} frames queued in {queue_time:.3f} ms)")
+            
+            if profile:
+                print(f"✅ Block {idx+1} completed in {block_time:.2f} ms ({block_frames} frames queued in {queue_time:.3f} ms)")
 
             current_start_frame += current_num_frames
 
@@ -743,6 +746,8 @@ def generate_video_stream(prompt, seed, enable_torch_compile=False, enable_fp8=F
         except Exception as e:
             print(f"❌ Failed to emit generation complete: {e}")
 
+    # try:
+    #     pass
     except Exception as e:
         print(f"❌ Generation failed: {e}")
         try:
